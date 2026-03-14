@@ -1,0 +1,2549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>The Athenaeum — History of Philosophy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Lora:wght@400;500;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0a0d1a;
+  --surface: #141828;
+  --card: #1c2035;
+  --card-hover: #242840;
+  --amber: #d4a843;
+  --amber-dim: #8a6e2a;
+  --rust: #8b2252;
+  --chalk: #e8dcc8;
+  --chalk-dim: #8a8070;
+  --success: #4a9e6b;
+  --danger: #c0392b;
+  --iron: #252940;
+  --iron-light: #353950;
+  --font-display: 'Cormorant Garamond', serif;
+  --font-body: 'Lora', serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+}
+
+html, body {
+  height: 100%;
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--chalk);
+  overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: var(--grain);
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* ═══════════ SCROLLBAR ═══════════ */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--iron-light); border-radius: 3px; }
+
+/* ═══════════ SCREENS ═══════════ */
+.screen { display: none; min-height: 100vh; }
+.screen.active { display: flex; flex-direction: column; }
+
+/* ═══════════ TOP BAR ═══════════ */
+.top-bar {
+  position: sticky; top: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 20px;
+  background: linear-gradient(180deg, var(--bg) 0%, rgba(13,11,8,0.95) 100%);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--iron);
+}
+
+.gym-name {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  letter-spacing: 3px;
+  color: var(--amber);
+  text-transform: uppercase;
+}
+
+.stats-row {
+  display: flex; gap: 16px; align-items: center;
+}
+
+.stat {
+  display: flex; flex-direction: column; align-items: center;
+}
+
+.stat-value {
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--chalk);
+}
+
+.stat-label {
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--chalk-dim);
+}
+
+/* ═══════════ HUB SCREEN ═══════════ */
+.hub-hero {
+  text-align: center;
+  padding: 40px 20px 20px;
+}
+
+.hub-title {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 10vw, 5rem);
+  letter-spacing: 6px;
+  color: var(--chalk);
+  line-height: 0.9;
+}
+
+.hub-subtitle {
+  font-size: 0.85rem;
+  color: var(--chalk-dim);
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  margin-top: 8px;
+}
+
+/* ═══════════ BARBELL VISUALIZATION ═══════════ */
+.barbell-stage {
+  position: relative;
+  margin: 28px auto 0;
+  max-width: 460px;
+  width: 100%;
+  padding: 30px 20px 16px;
+}
+
+.barbell-container {
+  position: relative;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* The bar */
+.barbell-bar {
+  position: absolute;
+  width: 92%;
+  height: 6px;
+  background: linear-gradient(90deg, #5a5550, #7a7570, #5a5550);
+  border-radius: 3px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+  z-index: 1;
+}
+
+/* Center knurling */
+.barbell-bar::after {
+  content: '';
+  position: absolute;
+  left: 38%; right: 38%;
+  top: -1px; bottom: -1px;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent, transparent 2px,
+    rgba(255,255,255,0.08) 2px,
+    rgba(255,255,255,0.08) 3px
+  );
+  border-radius: 3px;
+}
+
+/* Plate rack - left and right */
+.plate-rack {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  z-index: 2;
+}
+
+.plate-rack.left {
+  right: 52%;
+  flex-direction: row-reverse;
+  gap: 1px;
+}
+
+.plate-rack.right {
+  left: 52%;
+  gap: 1px;
+}
+
+/* Individual plates */
+.plate {
+  width: 7px;
+  border-radius: 2px;
+  transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  position: relative;
+  box-shadow: 1px 0 2px rgba(0,0,0,0.4);
+}
+
+.plate.empty {
+  height: 14px;
+  background: var(--iron);
+  opacity: 0.25;
+}
+
+.plate.loaded {
+  animation: plateSlam 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* Plate sizes by tier */
+.plate.tier-1 { height: 28px; background: linear-gradient(180deg, #6b6560, #4a4540); }
+.plate.tier-2 { height: 36px; background: linear-gradient(180deg, #8a7560, #6b5540); }
+.plate.tier-3 { height: 44px; background: linear-gradient(180deg, #b08840, #8a6830); }
+.plate.tier-4 { height: 52px; background: linear-gradient(180deg, #d4a030, #b08020); }
+.plate.tier-5 { height: 60px; background: linear-gradient(180deg, #e8b838, #c89020); }
+
+/* Collar */
+.barbell-collar {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 10px;
+  height: 18px;
+  background: linear-gradient(180deg, #888, #666);
+  border-radius: 2px;
+  z-index: 3;
+  box-shadow: 0 0 4px rgba(0,0,0,0.5);
+}
+
+.barbell-collar.left { right: calc(52% - 2px); }
+.barbell-collar.right { left: calc(52% - 2px); }
+
+/* End caps */
+.barbell-cap {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 6px;
+  height: 12px;
+  background: #5a5550;
+  border-radius: 2px;
+  z-index: 0;
+}
+
+.barbell-cap.left { left: 2%; }
+.barbell-cap.right { right: 2%; }
+
+@keyframes plateSlam {
+  0% { transform: translateX(var(--slam-dir, 10px)) scale(1.1); opacity: 0; }
+  60% { transform: translateX(0) scale(1.05); }
+  100% { transform: translateX(0) scale(1); opacity: 1; }
+}
+
+.plate-rack.left .plate { --slam-dir: 10px; }
+.plate-rack.right .plate { --slam-dir: -10px; }
+
+/* Tier badge */
+.tier-badge {
+  text-align: center;
+  margin-top: 12px;
+}
+
+.tier-name {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  transition: color 0.5s ease;
+}
+
+.tier-name.t0 { color: var(--iron-light); }
+.tier-name.t1 { color: var(--chalk-dim); }
+.tier-name.t2 { color: #b08840; }
+.tier-name.t3 { color: var(--amber); }
+.tier-name.t4 { color: #f0c848; }
+.tier-name.t5 { color: #fff8e0; text-shadow: 0 0 20px rgba(232,168,56,0.6), 0 0 40px rgba(232,168,56,0.3); }
+
+.tier-count {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--chalk-dim);
+  margin-top: 2px;
+}
+
+/* Glow effect for high tiers */
+.barbell-glow {
+  position: absolute;
+  inset: -10px;
+  border-radius: 12px;
+  opacity: 0;
+  transition: opacity 0.8s ease;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.barbell-stage.tier-3 .barbell-glow {
+  opacity: 0.15;
+  background: radial-gradient(ellipse at center, var(--amber), transparent 70%);
+}
+
+.barbell-stage.tier-4 .barbell-glow {
+  opacity: 0.25;
+  background: radial-gradient(ellipse at center, var(--amber), transparent 60%);
+}
+
+.barbell-stage.tier-5 .barbell-glow {
+  opacity: 0.4;
+  background: radial-gradient(ellipse at center, #f0c848, var(--amber) 40%, transparent 70%);
+  animation: glowPulse 2s ease-in-out infinite;
+}
+
+@keyframes glowPulse {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.05); }
+}
+
+/* Spark particles */
+.spark-container {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 10;
+}
+
+.spark {
+  position: absolute;
+  width: 3px; height: 3px;
+  border-radius: 50%;
+  background: var(--amber);
+  opacity: 0;
+}
+
+@keyframes sparkFloat {
+  0% { opacity: 0; transform: translate(0, 0) scale(0.5); }
+  20% { opacity: 1; }
+  100% { opacity: 0; transform: translate(var(--sx), var(--sy)) scale(0); }
+}
+
+/* Weight total display */
+.weight-display {
+  position: absolute;
+  top: 4px; left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--chalk-dim);
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+
+.weight-display .weight-num {
+  color: var(--amber);
+  font-size: 0.8rem;
+}
+
+/* ═══════════ CHAPTER GRID ═══════════ */
+.chapter-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 12px;
+  padding: 20px;
+  max-width: 900px;
+  margin: 0 auto;
+  flex: 1;
+}
+
+.chapter-card {
+  position: relative;
+  background: var(--card);
+  border: 1px solid var(--iron);
+  border-radius: 8px;
+  padding: 16px 12px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  min-height: 140px;
+}
+
+.chapter-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--iron-light);
+  transition: background 0.3s ease;
+}
+
+.chapter-card:hover {
+  background: var(--card-hover);
+  border-color: var(--amber-dim);
+  transform: translateY(-2px);
+}
+
+.chapter-card:hover::before {
+  background: var(--amber);
+}
+
+.chapter-card.mastered {
+  border-color: var(--success);
+}
+
+.chapter-card.mastered::before {
+  background: var(--success);
+}
+
+.chapter-card.mastered::after {
+  content: '✓';
+  position: absolute;
+  top: 8px; right: 8px;
+  font-size: 0.75rem;
+  color: var(--success);
+  font-weight: 700;
+}
+
+.chapter-icon {
+  font-size: 2rem;
+  margin-bottom: 8px;
+  filter: grayscale(0.3);
+}
+
+.chapter-card.mastered .chapter-icon { filter: grayscale(0); }
+
+.chapter-num {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  color: var(--chalk-dim);
+  letter-spacing: 2px;
+  margin-bottom: 4px;
+}
+
+.chapter-title {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--chalk);
+  line-height: 1.3;
+}
+
+.chapter-mastery {
+  margin-top: auto;
+  padding-top: 10px;
+  display: flex;
+  gap: 4px;
+}
+
+.mastery-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--iron);
+  transition: background 0.3s ease;
+}
+
+.mastery-dot.filled { background: var(--amber); }
+.mastery-dot.correct { background: var(--success); }
+
+/* ═══════════ STUDY SCREEN ═══════════ */
+.study-screen { align-items: center; }
+
+.study-header {
+  width: 100%;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.back-btn {
+  background: none; border: none;
+  color: var(--chalk-dim);
+  font-size: 1.4rem;
+  cursor: pointer;
+  padding: 4px 8px;
+  transition: color 0.2s;
+}
+
+.back-btn:hover { color: var(--amber); }
+
+.study-chapter-name {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  letter-spacing: 2px;
+  color: var(--amber);
+}
+
+.study-progress {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--chalk-dim);
+}
+
+/* ═══════════ CARD CONTAINER ═══════════ */
+.card-stage {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  width: 100%;
+  max-width: 500px;
+  perspective: 1200px;
+}
+
+.card-3d {
+  width: 100%;
+  aspect-ratio: 3/4;
+  max-height: 65vh;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.7s cubic-bezier(0.4, 0.0, 0.2, 1);
+  cursor: pointer;
+}
+
+.card-3d.flipped { transform: rotateY(180deg); }
+
+.card-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ═══════════ CARD FRONT (HOOK) ═══════════ */
+.card-front {
+  background: var(--card);
+  border: 2px solid var(--iron);
+  padding: 0;
+}
+
+.card-style-bar {
+  padding: 8px 16px;
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--chalk-dim);
+  background: var(--iron);
+  display: flex;
+  justify-content: space-between;
+}
+
+.card-hook-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 30px 24px;
+  text-align: center;
+}
+
+.card-hook-icon {
+  font-size: 3.5rem;
+  margin-bottom: 20px;
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.card-hook-text {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 5vw, 2.2rem);
+  letter-spacing: 2px;
+  color: var(--amber);
+  line-height: 1.1;
+  margin-bottom: 16px;
+}
+
+.card-tap-hint {
+  font-size: 0.7rem;
+  color: var(--chalk-dim);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  opacity: 0.6;
+}
+
+/* ═══════════ CARD BACK (QUESTION) ═══════════ */
+.card-back {
+  background: var(--surface);
+  border: 2px solid var(--iron);
+  transform: rotateY(180deg);
+  display: flex;
+  flex-direction: column;
+}
+
+.card-question {
+  padding: 24px 20px 16px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--chalk);
+  flex-shrink: 0;
+}
+
+.card-choices {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0 20px 20px;
+  overflow-y: auto;
+}
+
+.choice-btn {
+  background: var(--card);
+  border: 1px solid var(--iron);
+  border-radius: 8px;
+  padding: 12px 16px;
+  color: var(--chalk);
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.choice-btn:hover:not(.disabled) {
+  background: var(--card-hover);
+  border-color: var(--amber-dim);
+}
+
+.choice-btn .choice-key {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--chalk-dim);
+  background: var(--iron);
+  width: 24px; height: 24px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.choice-btn.correct {
+  background: rgba(74, 158, 107, 0.15);
+  border-color: var(--success);
+  color: var(--success);
+}
+
+.choice-btn.correct .choice-key {
+  background: var(--success);
+  color: var(--bg);
+}
+
+.choice-btn.wrong {
+  background: rgba(192, 57, 43, 0.12);
+  border-color: var(--danger);
+  color: var(--danger);
+  opacity: 0.7;
+}
+
+.choice-btn.wrong .choice-key {
+  background: var(--danger);
+  color: var(--bg);
+}
+
+.choice-btn.disabled { pointer-events: none; }
+
+/* ═══════════ RESULT OVERLAY ═══════════ */
+.result-bar {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 10;
+  border-radius: 0 0 12px 12px;
+  transform: translateY(100%);
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.result-bar.show { transform: translateY(0); }
+
+.result-bar.is-correct {
+  background: linear-gradient(180deg, rgba(74,158,107,0.9), rgba(74,158,107,0.95));
+}
+
+.result-bar.is-wrong {
+  background: linear-gradient(180deg, rgba(192,57,43,0.9), rgba(192,57,43,0.95));
+}
+
+.result-text {
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  letter-spacing: 3px;
+  color: white;
+}
+
+.result-next {
+  background: rgba(255,255,255,0.2);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: white;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.85rem;
+  padding: 8px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.result-next:hover { background: rgba(255,255,255,0.3); }
+
+/* ═══════════ CHAPTER COMPLETE MODAL ═══════════ */
+.modal-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.85);
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.modal-overlay.show { display: flex; }
+
+.modal-content {
+  background: var(--surface);
+  border: 1px solid var(--iron);
+  border-radius: 16px;
+  padding: 40px 32px;
+  text-align: center;
+  max-width: 380px;
+  width: 100%;
+  animation: modalIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes modalIn {
+  from { transform: scale(0.9) translateY(20px); opacity: 0; }
+  to { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+.modal-icon { font-size: 4rem; margin-bottom: 16px; }
+
+.modal-title {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  letter-spacing: 4px;
+  color: var(--amber);
+  margin-bottom: 8px;
+}
+
+.modal-subtitle {
+  font-size: 0.9rem;
+  color: var(--chalk-dim);
+  margin-bottom: 8px;
+}
+
+.modal-score {
+  font-family: var(--font-mono);
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--chalk);
+  margin: 16px 0;
+}
+
+.modal-score .of-total { font-size: 1rem; color: var(--chalk-dim); }
+
+.modal-badge {
+  display: inline-block;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+}
+
+.modal-badge.certified {
+  background: rgba(74,158,107,0.15);
+  border: 1px solid var(--success);
+  color: var(--success);
+}
+
+.modal-badge.retry {
+  background: rgba(232,168,56,0.12);
+  border: 1px solid var(--amber);
+  color: var(--amber);
+}
+
+.modal-btn {
+  background: var(--amber);
+  color: var(--bg);
+  border: none;
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  letter-spacing: 3px;
+  padding: 12px 32px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.modal-btn:hover { background: #f0b848; transform: translateY(-1px); }
+
+/* ═══════════ BOTTOM NAV ═══════════ */
+.bottom-bar {
+  padding: 12px 20px 24px;
+  text-align: center;
+}
+
+.bottom-bar p {
+  font-size: 0.65rem;
+  color: var(--iron-light);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+/* ═══════════ ANIMATIONS ═══════════ */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.chapter-card {
+  animation: fadeInUp 0.4s ease backwards;
+}
+
+/* Stagger chapter cards */
+.chapter-card:nth-child(1) { animation-delay: 0.02s; }
+.chapter-card:nth-child(2) { animation-delay: 0.04s; }
+.chapter-card:nth-child(3) { animation-delay: 0.06s; }
+.chapter-card:nth-child(4) { animation-delay: 0.08s; }
+.chapter-card:nth-child(5) { animation-delay: 0.10s; }
+.chapter-card:nth-child(6) { animation-delay: 0.12s; }
+.chapter-card:nth-child(7) { animation-delay: 0.14s; }
+.chapter-card:nth-child(8) { animation-delay: 0.16s; }
+.chapter-card:nth-child(9) { animation-delay: 0.18s; }
+.chapter-card:nth-child(10) { animation-delay: 0.20s; }
+.chapter-card:nth-child(11) { animation-delay: 0.22s; }
+.chapter-card:nth-child(12) { animation-delay: 0.24s; }
+.chapter-card:nth-child(13) { animation-delay: 0.26s; }
+.chapter-card:nth-child(14) { animation-delay: 0.28s; }
+.chapter-card:nth-child(15) { animation-delay: 0.30s; }
+.chapter-card:nth-child(16) { animation-delay: 0.32s; }
+.chapter-card:nth-child(17) { animation-delay: 0.34s; }
+.chapter-card:nth-child(18) { animation-delay: 0.36s; }
+.chapter-card:nth-child(19) { animation-delay: 0.38s; }
+.chapter-card:nth-child(20) { animation-delay: 0.40s; }
+.chapter-card:nth-child(21) { animation-delay: 0.42s; }
+.chapter-card:nth-child(22) { animation-delay: 0.44s; }
+.chapter-card:nth-child(23) { animation-delay: 0.46s; }
+.chapter-card:nth-child(24) { animation-delay: 0.48s; }
+.chapter-card:nth-child(25) { animation-delay: 0.50s; }
+
+/* ═══════════ SOUND & SETTINGS BUTTONS ═══════════ */
+.top-bar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: 12px;
+}
+
+.icon-btn {
+  background: none;
+  border: 1px solid var(--iron);
+  color: var(--chalk-dim);
+  font-size: 1rem;
+  width: 32px; height: 32px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.icon-btn:hover { border-color: var(--amber-dim); color: var(--amber); }
+.icon-btn.active { border-color: var(--amber); color: var(--amber); }
+
+/* ═══════════ SETTINGS DROPDOWN ═══════════ */
+.settings-wrapper {
+  position: relative;
+}
+
+.settings-dropdown {
+  display: none;
+  position: absolute;
+  top: 40px; right: 0;
+  background: var(--surface);
+  border: 1px solid var(--iron);
+  border-radius: 10px;
+  padding: 12px;
+  min-width: 220px;
+  z-index: 300;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+}
+
+.settings-dropdown.open { display: block; }
+
+.settings-stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 0;
+  font-size: 0.75rem;
+  color: var(--chalk-dim);
+  border-bottom: 1px solid var(--iron);
+  margin-bottom: 10px;
+}
+
+.settings-stat-row span:last-child {
+  font-family: var(--font-mono);
+  color: var(--chalk);
+}
+
+.settings-reset-btn {
+  width: 100%;
+  background: rgba(192,57,43,0.12);
+  border: 1px solid var(--danger);
+  color: var(--danger);
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.settings-reset-btn:hover { background: rgba(192,57,43,0.25); }
+
+/* ═══════════ PLAY MODE BUTTON ═══════════ */
+.play-mode-wrapper {
+  text-align: center;
+  padding: 8px 20px 20px;
+}
+
+.play-mode-btn {
+  background: linear-gradient(135deg, #c87a10, var(--amber));
+  border: none;
+  color: var(--bg);
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  letter-spacing: 3px;
+  padding: 14px 32px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 16px rgba(232,168,56,0.3);
+}
+
+.play-mode-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(232,168,56,0.45); }
+
+.play-mode-locked {
+  font-size: 0.75rem;
+  color: var(--chalk-dim);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 10px 0 2px;
+}
+
+/* ═══════════ PLAY MODE SCREEN ═══════════ */
+.play-screen { align-items: center; }
+
+.play-header {
+  width: 100%;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.play-title {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  letter-spacing: 2px;
+  color: var(--amber);
+}
+
+.play-progress {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--chalk-dim);
+}
+
+.play-content {
+  width: 100%;
+  max-width: 540px;
+  padding: 0 20px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Client profile card */
+.client-card {
+  background: var(--card);
+  border: 1px solid var(--iron);
+  border-left: 4px solid var(--amber);
+  border-radius: 10px;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.client-card-header {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--chalk-dim);
+  margin-bottom: 4px;
+}
+
+.client-name {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  letter-spacing: 2px;
+  color: var(--chalk);
+}
+
+.client-details {
+  font-size: 0.82rem;
+  color: var(--chalk-dim);
+  line-height: 1.5;
+}
+
+.client-goal {
+  font-size: 0.82rem;
+  color: var(--amber);
+  font-style: italic;
+}
+
+/* Complication warning */
+.complication-warning {
+  background: rgba(192,57,43,0.1);
+  border: 1px solid var(--danger);
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 0.82rem;
+  color: #e06050;
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.complication-warning .warn-icon { flex-shrink: 0; }
+
+/* Decision question */
+.decision-card {
+  background: var(--surface);
+  border: 1px solid var(--iron);
+  border-radius: 10px;
+  padding: 16px 20px;
+}
+
+.decision-label {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--chalk-dim);
+  margin-bottom: 10px;
+}
+
+.decision-question {
+  font-size: 0.95rem;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--chalk);
+  margin-bottom: 14px;
+}
+
+.decision-choices {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Session summary modal additions */
+.session-complications {
+  text-align: left;
+  margin: 12px 0;
+}
+
+.session-complications-title {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--chalk-dim);
+  margin-bottom: 8px;
+}
+
+.complication-item {
+  background: rgba(192,57,43,0.08);
+  border-left: 3px solid var(--danger);
+  padding: 6px 10px;
+  margin-bottom: 6px;
+  border-radius: 0 4px 4px 0;
+  font-size: 0.78rem;
+  color: #e06050;
+}
+
+.review-hooks {
+  text-align: left;
+  margin-top: 10px;
+}
+
+.review-hooks-title {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--chalk-dim);
+  margin-bottom: 8px;
+}
+
+.hook-item {
+  background: rgba(232,168,56,0.07);
+  border-left: 3px solid var(--amber-dim);
+  padding: 6px 10px;
+  margin-bottom: 6px;
+  border-radius: 0 4px 4px 0;
+  font-size: 0.78rem;
+  color: var(--chalk-dim);
+}
+
+/* ═══════════ RESPONSIVE ═══════════ */
+@media (max-width: 600px) {
+  .chapter-grid {
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 8px;
+    padding: 12px;
+  }
+  .chapter-card { min-height: 120px; padding: 12px 8px; }
+  .chapter-title { font-size: 0.65rem; }
+  .stats-row { gap: 10px; }
+  .stat-value { font-size: 0.9rem; }
+  .card-stage { padding: 12px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════ HUB SCREEN ═══════════ -->
+<div id="hub-screen" class="screen active">
+  <div class="top-bar">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div class="gym-name">The Athenaeum</div>
+      <div class="top-bar-actions">
+        <button class="icon-btn" id="sound-toggle-btn" title="Toggle sound">🔇</button>
+        <div class="settings-wrapper">
+          <button class="icon-btn" id="settings-btn" title="Settings">⚙️</button>
+          <div class="settings-dropdown" id="settings-dropdown">
+            <div class="settings-stat-row"><span>Certified</span><span id="settings-certified">0 / 25</span></div>
+            <div class="settings-stat-row"><span>Total Answered</span><span id="settings-answered">0</span></div>
+            <div class="settings-stat-row"><span>Accuracy</span><span id="settings-accuracy">—</span></div>
+            <div class="settings-stat-row"><span>Best Streak</span><span id="settings-streak">0</span></div>
+            <button class="settings-reset-btn" id="settings-reset-btn">⚠ Reset All Progress</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="stats-row">
+      <div class="stat">
+        <div class="stat-value" id="stat-mastered">0</div>
+        <div class="stat-label">Certified</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value" id="stat-streak">0</div>
+        <div class="stat-label">Streak</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value" id="stat-accuracy">—</div>
+        <div class="stat-label">Accuracy</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hub-hero">
+    <div class="hub-title">THE ATHENAEUM</div>
+    <div class="hub-subtitle">History of Philosophy</div>
+
+    <div class="barbell-stage" id="barbell-stage">
+      <div class="barbell-glow"></div>
+      <div class="spark-container" id="spark-container"></div>
+      <div class="weight-display" id="weight-display"></div>
+      <div class="barbell-container">
+        <div class="barbell-cap left"></div>
+        <div class="barbell-cap right"></div>
+        <div class="barbell-bar"></div>
+        <div class="barbell-collar left"></div>
+        <div class="barbell-collar right"></div>
+        <div class="plate-rack left" id="plates-left"></div>
+        <div class="plate-rack right" id="plates-right"></div>
+      </div>
+      <div class="tier-badge">
+        <div class="tier-name" id="tier-name">TABULA RASA</div>
+        <div class="tier-count" id="tier-count">0 / 26 certified</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="play-mode-wrapper" id="play-mode-wrapper">
+    <!-- populated by renderHub() -->
+  </div>
+
+  <div class="chapter-grid" id="chapter-grid"></div>
+
+  <div class="bottom-bar">
+    <p>Tap a chapter to study · 80% correct to certify</p>
+    <p style="margin-top:4px;opacity:0.4;">v1.0.0</p>
+  </div>
+</div>
+
+<!-- ═══════════ STUDY SCREEN ═══════════ -->
+<div id="study-screen" class="screen study-screen">
+  <div class="study-header">
+    <button class="back-btn" id="back-btn">←</button>
+    <div class="study-chapter-name" id="study-chapter-name"></div>
+    <div class="study-progress" id="study-progress"></div>
+  </div>
+
+  <div class="card-stage">
+    <div class="card-3d" id="card-3d">
+      <!-- FRONT: Hook -->
+      <div class="card-face card-front">
+        <div class="card-style-bar">
+          <span id="card-style-tag"></span>
+          <span id="card-chapter-tag"></span>
+        </div>
+        <div class="card-hook-area">
+          <div class="card-hook-icon" id="card-hook-icon"></div>
+          <div class="card-hook-text" id="card-hook-text"></div>
+          <div class="card-tap-hint">Tap to reveal question</div>
+        </div>
+      </div>
+      <!-- BACK: Question -->
+      <div class="card-face card-back">
+        <div class="card-question" id="card-question"></div>
+        <div class="card-choices" id="card-choices"></div>
+        <div class="result-bar" id="result-bar">
+          <div class="result-text" id="result-text"></div>
+          <button class="result-next" id="result-next">Next →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ PLAY MODE SCREEN ═══════════ -->
+<div id="play-screen" class="screen play-screen">
+  <div class="play-header">
+    <button class="back-btn" id="play-back-btn">←</button>
+    <div class="play-title">PHILOSOPHICAL DIALOGUE</div>
+    <div class="play-progress" id="play-progress">Decision 1/4</div>
+  </div>
+  <div class="play-content" id="play-content">
+    <!-- populated dynamically -->
+  </div>
+</div>
+
+<!-- ═══════════ SESSION COMPLETE MODAL ═══════════ -->
+<div class="modal-overlay" id="session-modal">
+  <div class="modal-content" style="max-width:440px;">
+    <div class="modal-icon" id="session-modal-icon">🏥</div>
+    <div class="modal-title" id="session-modal-title">SESSION COMPLETE</div>
+    <div class="modal-subtitle" id="session-modal-client"></div>
+    <div class="modal-score" id="session-modal-score"></div>
+    <div id="session-modal-body" style="text-align:left;"></div>
+    <br>
+    <button class="modal-btn" id="session-modal-btn">Back to Library</button>
+  </div>
+</div>
+
+<!-- ═══════════ CHAPTER COMPLETE MODAL ═══════════ -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal-content">
+    <div class="modal-icon" id="modal-icon"></div>
+    <div class="modal-title" id="modal-title"></div>
+    <div class="modal-subtitle" id="modal-subtitle"></div>
+    <div class="modal-score" id="modal-score"></div>
+    <div class="modal-badge" id="modal-badge"></div>
+    <br>
+    <button class="modal-btn" id="modal-btn">Back to Library</button>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+// THE ATHENAEUM — HISTORY OF PHILOSOPHY GAME
+// ═══════════════════════════════════════════════
+
+const CHAPTERS = [
+  { id: 1, title: "Pre-Socratics", icon: "🌊", style: "ancient" },
+  { id: 2, title: "Socrates & the Examined Life", icon: "🏛️", style: "dialogue" },
+  { id: 3, title: "Plato — Forms & the Republic", icon: "☀️", style: "idealist" },
+  { id: 4, title: "Aristotle — Substance & Virtue", icon: "🔬", style: "naturalist" },
+  { id: 5, title: "Hellenistic Schools", icon: "🏺", style: "ancient" },
+  { id: 6, title: "Neoplatonism", icon: "✨", style: "mystical" },
+  { id: 7, title: "Islamic Golden Age", icon: "🌙", style: "illuminated" },
+  { id: 8, title: "Medieval Christian Thought", icon: "⛪", style: "gothic" },
+  { id: 9, title: "Late Medieval & Nominalism", icon: "✂️", style: "gothic" },
+  { id: 10, title: "Renaissance Philosophy", icon: "🎭", style: "renaissance" },
+  { id: 11, title: "Rationalism", icon: "🔺", style: "geometric" },
+  { id: 12, title: "Empiricism", icon: "👁️", style: "empirical" },
+  { id: 13, title: "Kant — Critical Philosophy", icon: "⚖️", style: "enlightenment" },
+  { id: 14, title: "German Idealism", icon: "🌀", style: "romantic" },
+  { id: 15, title: "Kierkegaard & Proto-Existentialism", icon: "😰", style: "romantic" },
+  { id: 16, title: "Marx & Historical Materialism", icon: "⚒️", style: "industrial" },
+  { id: 17, title: "Nietzsche", icon: "🦅", style: "dramatic" },
+  { id: 18, title: "Phenomenology", icon: "🎯", style: "modernist" },
+  { id: 19, title: "Heidegger", icon: "🪵", style: "modernist" },
+  { id: 20, title: "Existentialism", icon: "🚪", style: "noir" },
+  { id: 21, title: "Early Analytic Philosophy", icon: "📐", style: "logical" },
+  { id: 22, title: "Later Wittgenstein & Ordinary Language", icon: "💬", style: "logical" },
+  { id: 23, title: "Pragmatism", icon: "🔧", style: "american" },
+  { id: 24, title: "Post-Structuralism & Deconstruction", icon: "🔀", style: "postmodern" },
+  { id: 25, title: "Contemporary Ethics & Political Philosophy", icon: "🗳️", style: "contemporary" },
+  { id: 26, title: "Essential Greek & Latin Terminology", icon: "📜", style: "ancient" },
+];
+
+const QUESTIONS = [
+  // Ch.1: Pre-Socratics
+  { ch:1, q:"Heraclitus's doctrine of the unity of opposites holds that:", c:["Opposites are illusions","Opposites are identical in nature","Reality consists of tension between opposing forces","Contradiction proves knowledge impossible"], a:2, hook:"HERACLITUS: TENSION between opposites IS reality", icon:"⚡" },
+  { ch:1, q:"Parmenides argues that change is impossible because:", c:["The gods forbid it","What-is cannot come from what-is-not","Matter is eternal and unchanging","Sense perception is always accurate"], a:1, hook:"PARMENIDES: from NOTHING, NOTHING comes", icon:"🚫" },
+  { ch:1, q:"Anaximander's apeiron serves as:", c:["A mathematical concept","The indeterminate source from which all things arise","A synonym for water","The name of the first god"], a:1, hook:"The BOUNDLESS births everything but IS no thing", icon:"♾️" },
+  { ch:1, q:"The Pythagorean claim 'all is number' implies:", c:["Mathematics is a useful tool","The fundamental structure of reality is mathematical","Numbers have no physical meaning","Only mathematicians can know truth"], a:1, hook:"PYTHAGORAS: NUMBERS are the skeleton of the COSMOS", icon:"🔢" },
+  { ch:1, q:"Democritus's atomism differs from modern atomic theory primarily in that:", c:["He denied void","His atoms had qualitative properties","His atoms were mathematically derived","He believed atoms were infinite in shape but lacked consciousness"], a:3, hook:"DEMOCRITUS: infinite SHAPES, no inner LIFE", icon:"⚛️" },
+
+  // Ch.2: Socrates
+  { ch:2, q:"The Socratic elenchus is best characterized as:", c:["A method of direct instruction","Cross-examination revealing contradictions in beliefs","A form of democratic voting","A religious purification ritual"], a:1, hook:"ELENCHUS: question until the contradiction BLEEDS through", icon:"🗡️" },
+  { ch:2, q:"Socrates' claim that 'virtue is knowledge' entails:", c:["Only educated people can be moral","Wrongdoing is always a result of ignorance","Knowledge of facts guarantees good behavior","Philosophy should replace religion"], a:1, hook:"Nobody does WRONG on PURPOSE — they just don't KNOW", icon:"🧠" },
+  { ch:2, q:"The 'Socratic problem' in scholarship refers to:", c:["Whether Socrates existed","Distinguishing historical Socrates from Plato's character","Whether Socrates could read","The question of Socrates' trial"], a:1, hook:"Which SOCRATES? Plato's PUPPET or the real man?", icon:"🎭" },
+  { ch:2, q:"In the Apology, Socrates interprets the Oracle by concluding:", c:["He is wisest because he has the most knowledge","He is wisest because he alone knows he knows nothing","The Oracle was wrong","Wisdom belongs only to gods"], a:1, hook:"WISEST because he KNOWS he DOESN'T know", icon:"🏛️" },
+  { ch:2, q:"Socratic irony functions philosophically by:", c:["Making audiences laugh","Feigning ignorance to expose unfounded confidence","Deceiving opponents for advantage","Demonstrating communication is impossible"], a:1, hook:"PRETEND ignorance to EXPOSE fake knowledge", icon:"😏" },
+
+  // Ch.3: Plato
+  { ch:3, q:"The Theory of Forms posits that:", c:["Physical objects are most real","Abstract eternal entities are the true objects of knowledge","Forms are mental constructs only","Knowledge comes exclusively from sense experience"], a:1, hook:"The FORM is more REAL than the shadow on the CAVE wall", icon:"☀️" },
+  { ch:3, q:"The Allegory of the Cave illustrates:", c:["Benefits of physical exercise","The philosopher's ascent from appearances to knowledge of the Good","The impossibility of education","Superiority of democracy"], a:1, hook:"CHAINS in the CAVE — turn around and see the SUN", icon:"🔗" },
+  { ch:3, q:"Plato's tripartite soul consists of:", c:["Body, mind, spirit","Reason, spirit (thumos), and appetite","Id, ego, superego","Memory, imagination, will"], a:1, hook:"REASON drives, SPIRIT is the horse, APPETITE drags", icon:"🐴" },
+  { ch:3, q:"The Third Man Argument challenges Forms by showing:", c:["There is no Form of Man","An infinite regress arises explaining the relation between particulars and Forms","Forms cannot be beautiful","Plato plagiarized Socrates"], a:1, hook:"THIRD MAN: if Man resembles the Form, who explains THAT?", icon:"👤" },
+  { ch:3, q:"The philosopher-king is justified in ruling because:", c:["Philosophers are strongest","Only those who know the Form of the Good can govern justly","Elections are too slow","Philosophers are wealthiest"], a:1, hook:"Only who SEES the GOOD can steer the SHIP", icon:"👑" },
+
+  // Ch.3 DEEP DIVE: Plato's Theory of Forms (Panel of Experts expansion)
+  { ch:3, q:"On the Divided Line, dianoia corresponds to:", c:["Shadows and reflections (eikasia)","Physical objects and beliefs (pistis)","Reasoning from unexamined hypotheses using images — the mathematical mode","Dialectic grasping unhypothetical first principles (noesis)"], a:2, hook:"MATHEMATICIANS draw TRIANGLES but never SEE the Form", icon:"📐" },
+  { ch:3, q:"The Form of the Good is 'beyond being' (epekeina tes ousias) means:", c:["The Good does not actually exist","The Good surpasses other Forms — source of their being and intelligibility while not a mere instance of being","The Good is identical with Being","The Good is accessible only through mystical experience"], a:1, hook:"The SUN outranks the LIGHT it gives — GOOD outranks BEING", icon:"☀️" },
+  { ch:3, q:"In the Simile of the Sun, the Good provides:", c:["Forms by emanation like the sun generates objects","Forms with truth and the knower with power of knowing — and bestows being and essence","The brightest Form apprehended last","Mathematical ratio structuring all Forms"], a:1, hook:"Not just SEEN but NOURISHED — the Good FEEDS reality its EXISTENCE", icon:"🌅" },
+  { ch:3, q:"Recollection functions differently in the Meno vs Phaedo because:", c:["Meno proves immortality; Phaedo explains learning","Meno solves Meno's paradox through the slave boy; Phaedo argues for pre-existence since we must have known Forms before birth","Meno covers only math; Phaedo only ethics","Meno is metaphorical; Phaedo literal"], a:1, hook:"SLAVE BOY solves geometry; PHAEDO soul REMEMBERS equality from BEFORE birth", icon:"👶" },
+  { ch:3, q:"The whole/part dilemma about participation is damaging because:", c:["If a Form is whole in each particular it exists in many places; if only a part, Largeness becomes absurdly small","Forms become material objects distributed through space","Participation can't be causation","It requires the Indefinite Dyad to resolve"], a:0, hook:"LARGENESS sliced into PIECES becomes absurdly SMALL", icon:"🔪" },
+  { ch:3, q:"The 'Greatest Difficulty' in the Parmenides argues:", c:["Forms knowable only relative to other Forms, particulars only to particulars — human knowledge can't reach Forms, gods' knowledge can't reach us","An infinite number of intermediate Forms is required","A paradigm must be in the same realm as what it models","Forms cannot be spoken of since language is sensible"], a:0, hook:"GODS know Forms, WE know copies — the CHASM swallows both DIRECTIONS", icon:"🕳️" },
+  { ch:3, q:"The 'Pauline predication' defense of self-predication holds:", c:["When Plato says 'the Beautiful is beautiful' he means it is the standard of beauty, not a beautiful object — a different kind of predication","Forms self-predicate exactly like particulars","Self-predication applies only to Being and Unity","Plato abandoned self-predication after the Symposium"], a:0, hook:"Beauty IS beauty — but not the way a SUNSET is beautiful", icon:"🪞" },
+  { ch:3, q:"The Sophist's five Greatest Kinds are:", c:["Being, Unity, Plurality, Likeness, Unlikeness","Being, Rest, Motion, Same, Different — showing Forms must blend for discourse","Being, Truth, Falsity, Knowledge, Opinion","Being, Limit, Unlimited, Mixture, Cause"], a:1, hook:"Five GREATEST KINDS blend like VOWELS letting consonants SPEAK", icon:"🔤" },
+  { ch:3, q:"The Sophist redefines non-being as:", c:["Absolute nothingness — Parmenides was wrong","Eliminated entirely — all statements are affirmative","The Form of Difference — to say 'is not X' means 'is different from X'","The Form of Motion — change means ceasing to be"], a:2, hook:"NOT-BEING isn't NOTHING — just being DIFFERENT from something", icon:"🔀" },
+  { ch:3, q:"The Timaeus demiurge is:", c:["Identical with the Form of the Good","A divine craftsman imposing order on pre-existing chaos by modeling on the Forms — distinct from Forms themselves","Creator of both Forms and matter","A mythological figure explicitly not metaphysically real"], a:1, hook:"CRAFTSMAN copies the BLUEPRINT — didn't DRAW it or quarry the STONE", icon:"🏗️" },
+  { ch:3, q:"The receptacle (chora) is described as:", c:["Prime matter — featureless substrate like wax","Empty space — proto-Newtonian container","A 'nurse of becoming' apprehended by bastard reasoning — neither intelligible nor sensible, providing spatial medium for copies of Forms","The material cause Aristotle later systematized"], a:2, hook:"INVISIBLE nurse holds REALITY's babies in a BASTARD-reasoned cradle", icon:"🍼" },
+  { ch:3, q:"The Tübingen school's 'unwritten doctrines' thesis claims:", c:["Plato secretly taught materialism","Plato's most fundamental principles were the One and the Indefinite Dyad — Forms derive from these, reserved for oral teaching","Plato withheld ethics from writing","The doctrines concern Plato's plans for Syracuse"], a:1, hook:"ONE and the INDEFINITE DYAD: the SECRET engine BENEATH the Forms", icon:"🤫" },
+  { ch:3, q:"Plato's critique of writing in the Phaedrus argues:", c:["Writing corrupts style","Writing can't answer questions, always says the same thing, produces appearance of wisdom — paradoxically delivered in writing","Writing makes philosophy too accessible","Writing freezes dialectic into dogma"], a:1, hook:"BOOKS can't ARGUE BACK — says the man who WROTE thirty dialogues", icon:"📜" },
+  { ch:3, q:"Socrates rejects 'true judgment with logos' in the Theaetetus because:", c:["Justification leads to infinite regress","All three interpretations of logos either render the definition circular or fail to distinguish knowledge from true belief","True judgment alone suffices for knowledge","Knowledge of the Good can't be propositional"], a:1, hook:"Three tries at LOGOS — each CIRCLES back or adds NOTHING new", icon:"🔄" },
+  { ch:3, q:"Dianoia differs from noesis because:", c:["Dianoia uses senses, noesis uses thought","Dianoia grasps Forms, noesis grasps the Good","Dianoia reasons hypothetically downward from assumptions using images; noesis moves upward through dialectic to the unhypothetical first principle","Dianoia is discursive about physics, noesis intuitive about math"], a:2, hook:"GEOMETRY assumes AXIOMS; DIALECTIC climbs PAST them to the UNHYPOTHETICAL", icon:"🧗" },
+  { ch:3, q:"The Phaedo's argument from recollection turns on the premise that:", c:["We never encounter truly equal objects","Equal things appear equal to one but unequal to another","We judge equal things to 'fall short of' the Equal itself — recognizing deficiency presupposes prior acquaintance with the standard","Mathematical equality is analytic and needs no experience"], a:2, hook:"STICKS fall SHORT — can't see the DEFICIT without already KNOWING perfection", icon:"📏" },
+  { ch:3, q:"The blending (symploke) of Forms is necessary because:", c:["Without it each Form exists in isolation and no predication is possible — discourse requires that some Forms combine","It resolves the Third Man by having Forms participate in each other","It explains how physical objects are constituted from Forms","It replaces participation entirely"], a:0, hook:"If Forms can't MIX, nobody can SAY anything TRUE about anything", icon:"🧪" },
+  { ch:3, q:"The 'noēmata' objection in the Parmenides targets:", c:["The claim that Forms are thoughts in minds — if so, things participating are made of thoughts (everything thinks), or thoughts are of nothing","Mythological language trivializing metaphysics","The claim that participation is spatial covering","The theory of recollection"], a:0, hook:"If Forms are just THOUGHTS, do ROCKS have to THINK to be rocky?", icon:"💭" },
+
+  // Ch.4: Aristotle
+  { ch:4, q:"Aristotle's hylomorphism holds that substances are composites of:", c:["Mind and body","Matter (hyle) and form (morphe)","Atoms and void","Essence and accident only"], a:1, hook:"HYLO-MORPHISM: every THING is STUFF shaped by FORM", icon:"🏺" },
+  { ch:4, q:"The four causes include all EXCEPT:", c:["Material cause","Formal cause","Efficient cause","Temporal cause"], a:3, hook:"Material, Formal, Efficient, FINAL — no TEMPORAL", icon:"4️⃣" },
+  { ch:4, q:"Aristotle's doctrine of the mean holds that virtue is:", c:["Absolute moderation","A disposition to choose the intermediate relative to us","The exact mathematical midpoint","Avoiding all strong emotions"], a:1, hook:"MEAN: not the middle of the ruler, but YOUR sweet spot", icon:"⚖️" },
+  { ch:4, q:"For Aristotle, eudaimonia is best translated as:", c:["Pleasure","Happiness as subjective feeling","Flourishing through excellent activity","Absence of pain"], a:2, hook:"EUDAIMONIA: not happy FEELINGS but a life well LIVED", icon:"🌿" },
+  { ch:4, q:"The unmoved mover is:", c:["A personal intervening god","Pure actuality that moves all things as object of desire","A physical force at cosmos edge","An earlier version of Newton's first law"], a:1, hook:"UNMOVED MOVER: everything DESIRES it but it DESIRES nothing", icon:"🎯" },
+
+  // Ch.4 DEEP DIVE: Aristotle (Panel of Experts expansion)
+  { ch:4, q:"Primary substance differs from secondary substance in that:", c:["Primary are universals predicated of secondary","Secondary are said-of primary but not present-in; primary are neither said-of nor present-in anything","Primary are genera, secondary are species","Secondary exist independently, primary depend on them"], a:1, hook:"SAID-OF but never SUBJECT — THIS man, not 'mankind'", icon:"🏛️" },
+  { ch:4, q:"In Metaphysics Zeta, Aristotle rejects substratum as sufficient for substance because:", c:["Stripping all predicates leaves something indeterminate — substance must be separable and a 'this'","Substratum is Platonic","Substratum can't be predicated of things","Substratum can't undergo change"], a:0, hook:"STRIP TO NOTHING — bare matter isn't a THIS", icon:"🧅" },
+  { ch:4, q:"The function argument's most controversial premise is:", c:["The good is found in performing one's function well","That humans have a characteristic function at all, since 'human' names no single craft","Virtue is a disposition not a faculty","The soul has a rational part"], a:1, hook:"WHAT'S A HUMAN FOR? Unlike a flute-player, no obvious ANSWER", icon:"⚙️" },
+  { ch:4, q:"Phronesis cannot be taught like episteme because:", c:["It deals with necessary truths too complex for teaching","It requires experience of particulars that only time furnishes — young people can't be practically wise","It's moral not intellectual virtue","It's innate intuition"], a:1, hook:"YOUTH CAN'T HAVE IT — no shortcut past EXPERIENCE", icon:"👴" },
+  { ch:4, q:"Aristotle resolves akrasia (weakness of will) by arguing:", c:["He agrees with Socrates that it's impossible","The akratic possesses the universal premise but fails to actualize the particular — knowledge like a drunk's or sleeper's","Appetite simply overpowers fully active rational judgment","Akrasia only concerns bodily pleasures"], a:1, hook:"KNOW BUT NOT USING — the drunk GEOMETER", icon:"🍷" },
+  { ch:4, q:"Two conditions make an action involuntary:", c:["Ignorance of the good and external reward","Compulsion (origin of motion entirely external) and ignorance of relevant particulars","Lack of deliberation and absence of rational desire","Acting from passion and acting from appetite"], a:1, hook:"FORCE or IGNORANCE — nothing else excuses", icon:"✋" },
+  { ch:4, q:"Actuality is prior to potentiality in all these senses EXCEPT:", c:["In definition — potential defined by reference to actual","In time — a prior actual of same form must exist","In substance — eternal things are more fully actual","In spatial extension — actuals occupy more space"], a:3, hook:"ACTUAL COMES FIRST three ways — but NOT by SIZE", icon:"🌱" },
+  { ch:4, q:"Demonstration creates an infinite regress of premises. Aristotle solves this by:", c:["Allowing circular reasoning between sciences","Positing nous (intellectual intuition) as non-demonstrative grasp of first principles","Grounding demonstration in sense perception alone","Excluding mathematics from science"], a:1, hook:"REGRESS STOPS AT NOUS — first principles SEEN not proved", icon:"🔬" },
+  { ch:4, q:"The soul is 'first actuality' rather than simply 'actuality' because:", c:["The soul is the material cause of the body","First actuality is like possessing knowledge without exercising it — a sleeping geometer still has a soul","First actuality is only the nutritive soul","The soul has temporal priority over the body"], a:1, hook:"SLEEPING GEOMETER still has the SOUL of a knower", icon:"💤" },
+  { ch:4, q:"Hamartia in the Poetics most likely means:", c:["A deep moral vice deserving punishment","An error in judgment, committed not through wickedness but ignorance of particulars","Hubris against the gods","A structural defect in the plot"], a:1, hook:"ERROR NOT EVIL — Oedipus wasn't wicked, just WRONG", icon:"🎭" },
+  { ch:4, q:"The finest tragic arrangement of peripeteia and anagnorisis is:", c:["Separate episodes for sustained emotion","Peripeteia first, anagnorisis later in denouement","They coincide — reversal and recognition happen together, as in Oedipus","Anagnorisis precedes peripeteia"], a:2, hook:"OEDIPUS DOUBLE STRIKE — learns and falls in one moment", icon:"⚡" },
+  { ch:4, q:"Natural slavery argues that some humans are slaves by nature because:", c:["Non-Greek peoples are culturally inferior","Those who apprehend reason but don't possess it for deliberation are suited to be directed by those who do","Slavery is conventional but practically necessary","Natural slaves lack a rational soul entirely"], a:1, hook:"APPREHEND but not POSSESS — can follow but can't lead", icon:"⚖️" },
+  { ch:4, q:"Aristotle's Third Man Argument against Plato's Forms shows:", c:["A third entity is needed to explain what Form and particulars have in common, generating infinite regress","The Form is a third man alongside Socrates and Callias","A third mediating entity (Demiurge) is required","Participation creates a third ontological level"], a:0, hook:"INFINITE REGRESS: who explains the EXPLAINER?", icon:"👤" },
+  { ch:4, q:"The categories are not themselves a genus because:", c:["Being is said in many ways (pollachos legetai) — it's systematically ambiguous, not univocal","Categories are linguistic only, not real","Aristotle reduced them to two in later works","Genera need external differentia, and being has none"], a:0, hook:"BEING IS NO GENUS — it means too MANY things", icon:"📊" },
+  { ch:4, q:"Only virtue-friendship is friendship in the primary sense because:", c:["It alone exists between non-equals","Only in virtue-friendship do friends love each other for the other's own sake, making it stable and enduring","Utility and pleasure friendships aren't genuine philia","It requires no external goods"], a:1, hook:"LOVED FOR THEMSELVES — not for what they GIVE you", icon:"🤝" },
+  { ch:4, q:"Polity (politeia) is Aristotle's best practical constitution because:", c:["Wealthy few ruling for the common good","A mixed constitution ruled by a large middle class — least prone to factional extremes","Direct democracy limited to virtuous citizens","Constitutional monarchy with advisory council"], a:1, hook:"MIDDLE CLASS RULES — extremes breed faction", icon:"🏛️" },
+  { ch:4, q:"In Metaphysics Zeta 17, substance is reconceived as cause. The key insight is:", c:["A statue is bronze organized by art","We ask 'why do these materials constitute a house?' — the form is the cause of matter being the thing","A seed is to a tree as potentiality to actuality","The captain rules the ship as soul rules body"], a:1, hook:"WHY THESE BRICKS A HOUSE? The FORM is the CAUSE", icon:"🧱" },
+  { ch:4, q:"Ethics and politics are both practical sciences, and politics is architectonic because:", c:["Ethics is theoretical, politics practical","Politics determines which sciences are studied and legislates what citizens must do","Ethics is productive, politics theoretical","Individual virtue is prior to political community"], a:1, hook:"POLITICS COMMANDS ALL — even which sciences the city STUDIES", icon:"👑" },
+
+  // Ch.5: Hellenistic
+  { ch:5, q:"The Stoic concept of apatheia refers to:", c:["Emotional numbness","Freedom from destructive passions through rational understanding","Clinical depression","Indifference to people"], a:1, hook:"APATHEIA: not NUMB but FREE from passion's TYRANNY", icon:"🗿" },
+  { ch:5, q:"Epicurus's tetrapharmakos includes:", c:["Pleasure is always wrong","Death is nothing to us","The gods constantly intervene","Pain is always unbearable"], a:1, hook:"FOUR CURES: god distant, death nothing, pleasure near, pain brief", icon:"💊" },
+  { ch:5, q:"Pyrrhonian skepticism advocates:", c:["Denial that anything exists","Suspension of judgment leading to tranquility","Blind faith in tradition","Only mathematics yields knowledge"], a:1, hook:"PYRRHO: SUSPEND judgment, find PEACE in not-knowing", icon:"🤷" },
+  { ch:5, q:"Stoic cosmic conflagration (ekpyrosis) holds that:", c:["The universe ends in ice","The universe periodically dissolves into fire and regenerates","Fire is evil","Conflagration is a metaphor for anger"], a:1, hook:"EKPYROSIS: the cosmos BURNS and is REBORN in cycles", icon:"🔥" },
+  { ch:5, q:"Diogenes the Cynic's provocative behavior intended to:", c:["Entertain crowds","Demonstrate social conventions are arbitrary and virtue natural","Prove he was insane","Win political office"], a:1, hook:"DIOGENES: live like a DOG to expose human PRETENSE", icon:"🐕" },
+
+  // Ch.6: Neoplatonism
+  { ch:6, q:"Plotinus's 'the One' is characterized as:", c:["The most powerful god","An absolutely simple transcendent source beyond being and thought","A mathematical entity","The sum of all things"], a:1, hook:"The ONE is beyond BEING — even 'exists' says too much", icon:"💫" },
+  { ch:6, q:"Emanation differs from creation ex nihilo in that:", c:["Emanation is faster","The source does not will or choose; reality overflows necessarily","Emanation requires physical materials","They are identical"], a:1, hook:"EMANATION: light doesn't CHOOSE to shine — it OVERFLOWS", icon:"🌅" },
+  { ch:6, q:"Plotinus's three hypostases are:", c:["Father, Son, Holy Spirit","The One, Intellect (Nous), and Soul","Being, Nothing, Becoming","Matter, Form, Privation"], a:1, hook:"ONE pours into NOUS pours into SOUL pours into MATTER", icon:"⬇️" },
+  { ch:6, q:"For Plotinus, evil is best understood as:", c:["A positive force opposing Good","Privation — the absence of the Good","An illusion that doesn't exist","Punishment from the gods"], a:1, hook:"EVIL is not a THING — it's where the LIGHT runs out", icon:"🕯️" },
+  { ch:6, q:"Proclus's contribution includes:", c:["Rejecting Plotinus entirely","Systematizing emanation into triadic structures of remaining, proceeding, returning","Proving the One doesn't exist","Merging Neoplatonism with atomism"], a:1, hook:"PROCLUS: everything REMAINS, PROCEEDS, RETURNS — cosmic TRIAD", icon:"🔄" },
+
+  // Ch.7: Islamic Golden Age
+  { ch:7, q:"Al-Farabi's 'virtuous city' draws primarily on:", c:["Quranic jurisprudence alone","Plato's Republic adapted to an Islamic framework","Aristotle's Physics","Persian mythology"], a:1, hook:"AL-FARABI: Plato's REPUBLIC in an ISLAMIC mirror", icon:"🏙️" },
+  { ch:7, q:"Avicenna's essence-existence distinction holds that:", c:["They are always identical","In contingent beings, what a thing is differs from that it is","Essence is more important","Only God has essence"], a:1, hook:"AVICENNA: WHAT you are and THAT you are — two questions", icon:"💎" },
+  { ch:7, q:"Averroes defended philosophy-religion harmony by arguing:", c:["Religion is always wrong","Philosophy and revelation are two paths to the same truth","Philosophy should replace religion","Truth can contradict itself"], a:1, hook:"AVERROES: TWO PATHS up the same MOUNTAIN of truth", icon:"⛰️" },
+  { ch:7, q:"Al-Ghazali's Incoherence of the Philosophers attacked:", c:["All religious belief","Philosophers' claims to demonstrate necessary causation and world's eternity","The existence of God","Islamic jurisprudence"], a:1, hook:"AL-GHAZALI: your LOGIC can't prove FIRE must burn COTTON", icon:"🔥" },
+  { ch:7, q:"The 'Active Intellect' in Islamic Aristotelianism refers to:", c:["Human creativity","A separate cosmic intelligence illuminating human minds","Political leadership","The Quran's inner meaning"], a:1, hook:"ACTIVE INTELLECT: a cosmic LAMP that lights YOUR mind", icon:"💡" },
+
+  // Ch.8: Medieval Christian
+  { ch:8, q:"Augustine's solution to the problem of evil relies on:", c:["Denying God's omnipotence","Evil as privation of good plus free will","Accepting evil as equally powerful","Ignoring the problem"], a:1, hook:"AUGUSTINE: evil is a HOLE in the good, not a THING", icon:"🕳️" },
+  { ch:8, q:"Anselm's ontological argument defines God as:", c:["The first cause","That than which nothing greater can be conceived","The most powerful being","The creator of morality"], a:1, hook:"ANSELM: the GREATEST CONCEIVABLE must EXIST — or not greatest", icon:"🔝" },
+  { ch:8, q:"Aquinas's Five Ways are best understood as:", c:["Five certain proofs","Five convergent arguments from natural reason","Five mystical experiences","Five readings of Genesis"], a:1, hook:"FIVE WAYS: motion, cause, contingency, degree, purpose — all POINT up", icon:"5️⃣" },
+  { ch:8, q:"The problem of universals asks:", c:["Whether the universe is infinite","Whether general terms refer to real entities or merely names","Whether God is universal","Whether Latin is universal"], a:1, hook:"UNIVERSALS: does REDNESS exist or just RED things?", icon:"🔴" },
+  { ch:8, q:"Aquinas's natural law theory holds that:", c:["Morality is whatever the king commands","Reason can discern moral principles grounded in human nature","Natural law contradicts divine law","Animals have same moral obligations"], a:1, hook:"NATURAL LAW: reason reads MORAL code written into NATURE", icon:"📜" },
+
+  // Ch.9: Late Medieval
+  { ch:9, q:"Ockham's nominalism holds that universals are:", c:["Real entities existing independently","Merely names or mental concepts; only individuals exist","Divine thoughts implanted in minds","Mathematical objects"], a:1, hook:"OCKHAM: only THIS horse exists — 'horseness' is just a WORD", icon:"🐴" },
+  { ch:9, q:"Ockham's Razor states:", c:["All knowledge is uncertain","Entities should not be multiplied beyond necessity","Simple explanations are always correct","Philosophy should be cut from theology"], a:1, hook:"RAZOR: don't invent ENTITIES you don't NEED", icon:"🪒" },
+  { ch:9, q:"Duns Scotus's haecceity refers to:", c:["Universal human nature","The individual thisness making each thing uniquely itself","God's omniscience","The soul's immortality"], a:1, hook:"HAECCEITY: the THIS-ness that makes YOU not just another human", icon:"☝️" },
+  { ch:9, q:"Voluntarism emphasizes:", c:["Human free will over divine","God's will as primary ground of moral obligation, not intellect","The will of the majority","Voluntary charity"], a:1, hook:"VOLUNTARISM: right because God WILLS it, not the reverse", icon:"✊" },
+  { ch:9, q:"The condemnations of 1277 were significant because they:", c:["Ended all European philosophy","Restricted Aristotelian claims limiting God's power, opening new thinking","Banned the Bible","Promoted Averroism"], a:1, hook:"1277: BANNING Aristotle accidentally FREED imagination", icon:"⛓️" },
+
+  // Ch.10: Renaissance
+  { ch:10, q:"Machiavelli's virtù refers to:", c:["Christian moral virtue","Political skill, boldness, and adaptability to maintain power","Physical strength alone","Passive obedience to fortune"], a:1, hook:"VIRTU: not virtue — CUNNING and FORCE to master FORTUNE", icon:"🦊" },
+  { ch:10, q:"Pico's Oration on the Dignity of Man argues:", c:["Humans are fixed in cosmic hierarchy","Humans have no fixed nature and can shape themselves","Only nobility have dignity","Dignity requires wealth"], a:1, hook:"PICO: you are the SCULPTOR of your own NATURE", icon:"🗿" },
+  { ch:10, q:"Montaigne's skeptical essays are characterized by:", c:["Dogmatic atheism","Exploratory self-examination questioning human judgment","Systematic philosophy","Political manifestos"], a:1, hook:"MONTAIGNE: 'What do I KNOW?' — even about MYSELF?", icon:"🪞" },
+  { ch:10, q:"Giordano Bruno was significant for defending:", c:["Geocentrism","An infinite universe with multiple worlds","Supremacy of the Pope","Nominalism"], a:1, hook:"BRUNO: INFINITE worlds — and they BURNED him for it", icon:"🔥" },
+  { ch:10, q:"Erasmus's humanism emphasized:", c:["Rejection of all religion","Return to classical sources and reform through learning","Military conquest","Strict scholasticism"], a:1, hook:"ERASMUS: back to the SOURCES, reform from WITHIN", icon:"📚" },
+
+  // Ch.11: Rationalism
+  { ch:11, q:"Descartes's cogito ergo sum functions as:", c:["A logical syllogism","An indubitable certainty surviving radical doubt","A religious confession","A mathematical proof"], a:1, hook:"COGITO: doubt EVERYTHING and the DOUBTER still stands", icon:"💭" },
+  { ch:11, q:"Spinoza's substance monism holds that:", c:["There are many substances","Only one substance exists — God or Nature — with infinite attributes","Substance doesn't exist","Mind and body are separate"], a:1, hook:"SPINOZA: God IS Nature — one SUBSTANCE, infinite FACES", icon:"🌍" },
+  { ch:11, q:"Leibniz's monadology posits reality consists of:", c:["Atoms and void","Simple indivisible mind-like substances with no causal interaction","Pure matter","Forms and matter"], a:1, hook:"MONADS: windowless MIRRORS each reflecting the UNIVERSE alone", icon:"🪞" },
+  { ch:11, q:"Descartes's mind-body problem arises because:", c:["He denied the body","If mind and body are different substances, their interaction is mysterious","He was a materialist","He identified mind and body"], a:1, hook:"How does the GHOST drive the MACHINE?", icon:"👻" },
+  { ch:11, q:"Leibniz's sufficient reason states:", c:["Some things happen for no reason","For every truth there must be a sufficient reason why so and not otherwise","Reasons are always mathematical","Only God has reasons"], a:1, hook:"SUFFICIENT REASON: nothing happens WITHOUT a WHY", icon:"❓" },
+
+  // Ch.12: Empiricism
+  { ch:12, q:"Locke's rejection of innate ideas holds the mind at birth is:", c:["Full of divine knowledge","A tabula rasa written on by experience","Pre-programmed with language","Identical to every other mind"], a:1, hook:"LOCKE: mind starts BLANK — experience writes the STORY", icon:"📄" },
+  { ch:12, q:"Berkeley's esse est percipi claims:", c:["Matter exists independently","To be is to be perceived — objects exist only as ideas in minds","Only God perceives","Perception is always inaccurate"], a:1, hook:"BERKELEY: the TREE exists only if someone PERCEIVES it", icon:"🌳" },
+  { ch:12, q:"Hume's problem of induction challenges:", c:["Deductive logic","Rational justification for believing the future resembles the past","Mathematical certainty","The existence of God only"], a:1, hook:"HUME: sun rose 10,000 times — PROVE it rises TOMORROW", icon:"🌅" },
+  { ch:12, q:"Hume's bundle theory holds the self is:", c:["An immortal soul","Nothing but successive perceptions with no underlying substance","A Cartesian ego","A social construction only"], a:1, hook:"HUME: look INSIDE — no self, just a STREAM of perceptions", icon:"🌊" },
+  { ch:12, q:"Locke's primary vs secondary qualities holds that:", c:["All qualities are in the mind","Primary qualities are in objects; secondary in the perceiver","Secondary are more important","No distinction exists"], a:1, hook:"PRIMARY is in the THING; SECONDARY is in YOUR head", icon:"🎨" },
+
+  // Ch.13: Kant
+  { ch:13, q:"Kant's synthetic a priori judgments are:", c:["Trivially true by definition","Informative about the world yet knowable independent of experience","Empirical generalizations","Logically impossible"], a:1, hook:"SYNTHETIC A PRIORI: learns something NEW without LOOKING", icon:"🔮" },
+  { ch:13, q:"Kant's Copernican revolution proposes that:", c:["Earth revolves around sun","Objects conform to our cognitive faculties, not the reverse","Copernicus was a philosopher","Science replaces philosophy"], a:1, hook:"COPERNICAN: the MIND shapes the world, not the reverse", icon:"🔄" },
+  { ch:13, q:"The categorical imperative (first formulation) commands:", c:["Maximize happiness","Act only by maxims you can will as universal law","Obey the sovereign","Follow your emotions"], a:1, hook:"CATEGORICAL: could EVERYONE do this? If not, DON'T", icon:"📏" },
+  { ch:13, q:"The noumenon/phenomenon distinction holds that:", c:["Noumena are illusions","We know things only as they appear, not as they are in themselves","Phenomena are less real","There is no distinction"], a:1, hook:"PHENOMENA: world as you SEE it. NOUMENA: as it IS. Gap is permanent.", icon:"🚧" },
+  { ch:13, q:"Space and time in Kant's transcendental aesthetic are:", c:["Properties of things in themselves","A priori forms of sensibility imposed by the mind","Social conventions","Infinite substances"], a:1, hook:"SPACE and TIME: not in the world — LENSES you can't remove", icon:"👓" },
+
+  // Ch.13 DEEP DIVE: Kant (Panel of Experts expansion)
+  { ch:13, q:"The Transcendental Deduction (B-edition) aims to establish:", c:["Categories are derived from experience through abstraction","Pure concepts of understanding are necessary conditions for the possibility of experience itself","Synthetic a priori possible only in math and science","Unity of apperception is an empirical discovery"], a:1, hook:"CATEGORIES MAKE EXPERIENCE POSSIBLE — not the reverse", icon:"🧠" },
+  { ch:13, q:"The transcendental unity of apperception is:", c:["Empirical awareness of mental states over time","The original synthetic unity of consciousness making all combination of representations possible","The faculty of spatial and temporal intuition","The regulative idea of the soul"], a:1, hook:"I THINK must be able to ACCOMPANY all my representations", icon:"🔗" },
+  { ch:13, q:"The Schematism chapter solves the problem of:", c:["How moral concepts apply to actions","How pure non-sensible categories can apply to sensible intuitions","How analytic judgments yield new knowledge","How the thing-in-itself causes appearances"], a:1, hook:"BRIDGE the HETEROGENEOUS — concepts meet intuitions", icon:"🌉" },
+  { ch:13, q:"A transcendental schema is produced by:", c:["Reason as a logical rule","Understanding as a sensible concept","Imagination as a transcendental time-determination mediating categories and appearances","Intellectual intuition grasping noumena"], a:2, hook:"IMAGINATION'S TIME-RULES — the hidden bridge-builder", icon:"⏳" },
+  { ch:13, q:"Each antinomy consists of:", c:["A thesis from experience and antithesis from logic","Contradictory propositions each provable when reason transgresses limits of experience","A syllogism with a fallacious middle term","A conflict between duty and inclination"], a:1, hook:"REASON VS ITSELF — both sides prove their case", icon:"⚔️" },
+  { ch:13, q:"Mathematical antinomies differ from dynamical antinomies in resolution because:", c:["Mathematical solved empirically, dynamical by faith","In mathematical both thesis and antithesis are false; in dynamical both can be true if thesis applies to noumena and antithesis to phenomena","Mathematical are insoluble; dynamical resolved by CI","All four resolved the same way"], a:1, hook:"BOTH FALSE vs BOTH TRUE — different logical structures", icon:"🔀" },
+  { ch:13, q:"The Paralogisms show rational psychology's error is:", c:["Confusing empirical with moral self","Mistaking formal unity of 'I think' for substantive knowledge of the soul as simple, identical, immortal substance","Denying consciousness","Conflating inner and outer sense"], a:1, hook:"FORMAL I does NOT equal SOUL-SUBSTANCE", icon:"👻" },
+  { ch:13, q:"The Refutation of Idealism argues against Descartes that:", c:["God guarantees external world","Inner experience is possible only through outer experience — external objects no less certain than self-awareness","External objects inferred from causal principle alone","Senses refute idealism without argument"], a:1, hook:"INNER PRESUPPOSES OUTER — can't know yourself without a world", icon:"🪞" },
+  { ch:13, q:"The qualifier 'merely' in 'never merely as a means' is crucial because:", c:["It's rhetorical emphasis","It permits using persons as means provided they're also respected as rational agents capable of consent","It allows exceptions in extreme necessity","It distinguishes perfect from imperfect duties"], a:1, hook:"MEANS OK, MERELY-MEANS NEVER — consent is the key", icon:"🤝" },
+  { ch:13, q:"The kingdom of ends is:", c:["A political utopia Kant thinks historically inevitable","A systematic union of rational beings under common moral laws, each legislating universally while subject to those laws","The afterlife rewarding virtue with happiness","A community governed by hypothetical imperatives"], a:1, hook:"LEGISLATE AND OBEY — every rational being is both KING and SUBJECT", icon:"👑" },
+  { ch:13, q:"Autonomy vs heteronomy is revolutionary because:", c:["All previous theories grounded obligation externally (happiness, God, nature), making will unfree — genuine morality requires self-legislation","It proves libertarian free will empirically","It eliminates need for practical reason","Moral motivation must involve inclination"], a:0, hook:"SELF-LEGISLATION OR SLAVERY to external masters", icon:"🔓" },
+  { ch:13, q:"The 'fact of reason' means:", c:["God's existence is demonstrable","The moral law is an undeniable datum of rational consciousness — not derived from theory or experience, but immediately known","Practical reason reduces to theoretical reason","Moral feelings ground the CI"], a:1, hook:"MORAL LAW: UNDERIVED DATUM — reason just KNOWS it", icon:"⚡" },
+  { ch:13, q:"The mathematically sublime differs from the dynamically sublime in that:", c:["Mathematical concerns geometric beauty, dynamical concerns organisms","Mathematical involves imagination's failure to comprehend absolute magnitude; dynamical involves nature's might revealing our supersensible vocation","Mathematical is objective, dynamical subjective","Mathematical applies to art, dynamical to nature only"], a:1, hook:"MAGNITUDE overwhelms vs MIGHT overwhelms — both reveal the SUPERSENSIBLE", icon:"🏔️" },
+  { ch:13, q:"'Purposiveness without purpose' means:", c:["Beautiful objects serve hidden biological purposes","We experience form as if designed for our faculties, without attributing any determinate concept or end","Art must have no purpose to be beautiful","Natural objects are purposive because God designed them"], a:1, hook:"AS-IF DESIGNED, NO CONCEPT — beauty's strange logic", icon:"🌸" },
+  { ch:13, q:"Organisms must be judged as 'natural purposes' but this judgment is:", c:["Constitutive knowledge of intelligent design","A regulative principle of reflective judgment — our faculties can't mechanistically explain self-organization","Aesthetic judgment with no cognitive content","Theoretical knowledge of final causes"], a:1, hook:"REGULATIVE NOT CONSTITUTIVE — a way of LOOKING not a fact of NATURE", icon:"🌿" },
+  { ch:13, q:"Constitutive vs regulative principles:", c:["Constitutive are moral, regulative theoretical","Constitutive determine objects and make experience possible; regulative guide inquiry toward systematic unity without constituting objects","Constitutive are a posteriori, regulative a priori","No stable distinction exists"], a:1, hook:"DETERMINE vs DIRECT — one builds the house, other draws the MAP", icon:"🧭" },
+  { ch:13, q:"The architectonic of pure reason provides:", c:["A metaphor for Kant's prose style","The systematic plan organizing all knowledge under a single idea — ensuring a unified whole not a mere aggregate","Kant's method of mathematical proof","A summary appendix of the Aesthetic"], a:1, hook:"SYSTEM NOT AGGREGATE — reason demands ARCHITECTURE", icon:"🏛️" },
+  { ch:13, q:"Post-Kantians found the thing-in-itself untenable because:", c:["They preferred naive realism","Positing an unknowable cause of appearances violates Kant's own restriction of causality to phenomena — an internal inconsistency","They rejected the synthetic a priori","Kant was too empiricist"], a:1, hook:"CAUSALITY CAN'T REACH BEYOND the fence Kant BUILT", icon:"🚪" },
+
+  // Ch.14: German Idealism
+  { ch:14, q:"Hegel's dialectic proceeds through:", c:["Thesis, antithesis, synthesis","Simple deduction","Empirical observation only","Random events"], a:0, hook:"HEGEL: every idea BREEDS its opposite, then they MERGE higher", icon:"🌀" },
+  { ch:14, q:"Hegel's Geist refers to:", c:["Individual consciousness only","The self-developing rational structure of reality through history","A religious ghost","Pure matter"], a:1, hook:"GEIST: reality is MIND waking up to ITSELF through HISTORY", icon:"🌅" },
+  { ch:14, q:"Fichte's post-Kantian idealism centers on:", c:["Rejecting the self","The self-positing I that generates both itself and the not-I","Material determinism","Return to pre-Kantian metaphysics"], a:1, hook:"FICHTE: the I CREATES itself AND its world by ACTING", icon:"⚡" },
+  { ch:14, q:"Schelling's Naturphilosophie argues:", c:["Nature is dead matter","Nature is living and shares rational structure with mind","Philosophy can't study nature","Nature is evil"], a:1, hook:"SCHELLING: NATURE is frozen INTELLIGENCE thawing into MIND", icon:"❄️" },
+  { ch:14, q:"Hegel's master-slave dialectic illustrates:", c:["Management techniques","How self-consciousness emerges through struggle for recognition","Economics of slavery","Military strategy"], a:1, hook:"MASTER-SLAVE: the slave who WORKS gains what the master LOSES", icon:"⛓️" },
+
+  // Ch.14 DEEP DIVE: Hegel (Panel of Experts expansion)
+  { ch:14, q:"Why does sense-certainty fail on its own terms in the Phenomenology?", c:["Sensory organs are unreliable","Saying 'This' and 'Now' produces only universals — the most concrete becomes the most abstract","It cannot account for causation","Kant proved intuitions without concepts are blind"], a:1, hook:"Saying THIS and NOW says EVERYTHING and therefore NOTHING", icon:"👁️" },
+  { ch:14, q:"What distinguishes Aufhebung from simple negation?", c:["Aufhebung means cancellation of the earlier stage","It simultaneously cancels, preserves, and elevates into higher unity","It is Kant's transcendental synthesis applied to history","Thesis and antithesis blend into compromise"], a:1, hook:"CANCEL-PRESERVE-ELEVATE: the corpse LIVES inside the BUTTERFLY", icon:"🦋" },
+  { ch:14, q:"Why does the slave's consciousness prove more developed than the master's?", c:["The slave physically overpowers the master","Through labor the slave shapes the world and achieves formative self-consciousness while the master remains in immediate enjoyment","The slave develops moral superiority through suffering","The reversal is purely economic"], a:1, hook:"LABOR sculpts the WORLD and secretly sculpts the SELF", icon:"⚒️" },
+  { ch:14, q:"The Unhappy Consciousness is a necessary stage because:", c:["It criticizes organized religion as harmful","Consciousness divided against itself cannot find itself in a transcendent other — structurally required","It describes empirical unhappiness of skeptical philosophers","It recognizes master-slave injustice and feels guilt"], a:1, hook:"The SOUL kneels before an UNREACHABLE beyond — worshipping what it CANNOT become", icon:"⛪" },
+  { ch:14, q:"Hegel's critique of Kant's thing-in-itself argues:", c:["Like Hume, we should discuss only impressions","By positing it as unknowable Kant has already determined it — to set a limit is to have gone beyond it","He denies anything beyond phenomena like Berkeley","The mistake was merely terminological"], a:1, hook:"To DRAW a LIMIT you must SEE both SIDES — Kant's wall REFUTES itself", icon:"🧱" },
+  { ch:14, q:"In the Science of Logic, pure Being passes into Nothing because:", c:["Being decays over time","Pure Being with no determination is completely indeterminate — indistinguishable from Nothing; their truth is Becoming","Skepticism must be overcome first","Being is God and Nothing is evil"], a:1, hook:"PURE Being is so EMPTY it already IS Nothing — they TREMBLE into BECOMING", icon:"🌀" },
+  { ch:14, q:"Determinate negation differs from abstract negation in that:", c:["It preserves the specific content of what was negated, yielding a new positive determination","It applies to particulars while abstract applies to universals","Abstract is formal logic (not-P) while determinate is real destruction","Determinate is doubt, abstract is certainty"], a:0, hook:"ABSTRACT negation leaves ASHES — DETERMINATE leaves a SEED", icon:"🌱" },
+  { ch:14, q:"Sittlichkeit differs from Moralität because:", c:["Sittlichkeit is collective, Moralität individual — Hegel prefers collective","Moralität is abstract individual duty (Kant); Sittlichkeit is concrete ethics realized in family, civil society, and state","Sittlichkeit is ancient Greek, Moralität modern — Hegel wants return to Greece","Hegel rejects both in favor of Absolute Knowledge"], a:1, hook:"KANT's duty is a SKELETON — SITTLICHKEIT puts FLESH through FAMILY, market, STATE", icon:"🏛️" },
+  { ch:14, q:"The Absolute must be understood as:", c:["A transcendent creator standing outside the world","The final proposition ending all inquiry","Not static substance but self-developing totality — substance equally as subject","The unknowable thing-in-itself"], a:2, hook:"The ABSOLUTE is not a DESTINATION but the JOURNEY knowing ITSELF", icon:"♾️" },
+  { ch:14, q:"The 'cunning of reason' means:", c:["Rational philosophers secretly manipulate politics","Historical individuals pursue passions but reason uses these drives to realize universal purposes","Only cunning leaders succeed","Truth emerges through systematic lying"], a:1, hook:"Napoleon thinks GLORY — REASON rides his AMBITION like a HORSE", icon:"🐴" },
+  { ch:14, q:"Left vs right Hegelians split over 'what is rational is actual' because:", c:["Right Hegelians justified existing institutions; left Hegelians read 'actual' normatively — demanding transformation","Left were atheists, right theists, but agreed on politics","Right rejected the statement, left defended it","Both agreed it was ironic"], a:0, hook:"RIGHT says the THRONE is rational — LEFT says only REVOLUTION makes it ACTUAL", icon:"⚔️" },
+  { ch:14, q:"The 'concrete universal' differs from abstract universals in that:", c:["It refers to physical objects vs mental entities","It has more examples","It is self-differentiating — generating and including its own particularizations rather than standing apart","It is empirical while abstract is a priori"], a:2, hook:"Abstract universal FLOATS above — CONCRETE universal LIVES through its PARTICULAR children", icon:"🌳" },
+  { ch:14, q:"Civil society in Hegel's state is necessary but insufficient because:", c:["It creates mutual dependence through particular interests but tends toward inequality, requiring the state as higher ethical unity","It is identical to Sittlichkeit","Hegel rejects it entirely","Free markets perfectly realize freedom"], a:0, hook:"The MARKET makes us NEED each other but TEARS us APART — STATE must WEAVE", icon:"🏪" },
+  { ch:14, q:"Hegel's 'end of art' means:", c:["Art is purely decorative with no cognitive content","Spirit's self-knowledge outgrows sensuous presentation as adequate medium — not that art-making ceases","No significant art after the classical period","Art is the highest form permanently"], a:1, hook:"ART is the IDEA wearing a BODY — when Spirit OUTGROWS the costume, PHILOSOPHY speaks NAKED", icon:"🎭" },
+  { ch:14, q:"Hegel criticized Schelling's Absolute as:", c:["Lacking academic credentials","'The night in which all cows are black' — undifferentiated unity skipping the labor of conceptual mediation","A myth created by later commentators","Materialism vs Hegel's idealism"], a:1, hook:"Schelling's Absolute: the NIGHT where all COWS are BLACK — no WORK, no DISTINCTIONS", icon:"🐄" },
+  { ch:14, q:"Hegel's freedom is self-determination through rational institutions, which differs from liberal and Rousseauian conceptions because:", c:["Freedom is purely internal contemplation","Unlike negative freedom or Rousseau's general will, genuine freedom requires recognizing rational social order as expression of one's own will","It is identical to Rousseau's general will","Only philosophers are truly free"], a:1, hook:"FREEDOM: not escaping CHAINS or obeying the MOB — RECOGNIZING yourself in RATIONAL institutions", icon:"🏗️" },
+  { ch:14, q:"The Phenomenology's methodological role in Hegel's system is:", c:["Hegel's autobiography disguised as philosophy","The 'ladder' demonstrating through immanent critique that the Absolute standpoint is necessary — after which the Logic begins presuppositionlessly","A rough draft Hegel abandoned","The same book as the Logic in different terms"], a:1, hook:"PHENOMENOLOGY climbs the LADDER — LOGIC kicks it away and THINKS without a CLIMBER", icon:"🪜" },
+
+  // Ch.15: Kierkegaard
+  { ch:15, q:"Kierkegaard's three stages of existence are:", c:["Childhood, adulthood, old age","Aesthetic, ethical, and religious","Thesis, antithesis, synthesis","Body, mind, spirit"], a:1, hook:"THREE STAGES: pleasure-seeker, duty-follower, LEAPER of faith", icon:"🪜" },
+  { ch:15, q:"The 'leap of faith' involves:", c:["Rational proof of God","Passionate non-rational commitment beyond objective evidence","Physical jumping","Blind obedience"], a:1, hook:"LEAP: reason gets to the EDGE — only faith gets ACROSS", icon:"🕳️" },
+  { ch:15, q:"Kierkegaard's critique of Hegel centers on:", c:["Hegel's mathematics","The system's inability to account for subjective passionate experience","Hegel's writing style","Hegel's politics"], a:1, hook:"KIERKEGAARD to HEGEL: your SYSTEM forgot the person LIVING in it", icon:"👤" },
+  { ch:15, q:"Anxiety (Angst) in Kierkegaard arises from:", c:["Financial worries","Awareness of one's radical freedom and possibility","Fear of death only","Social pressure"], a:1, hook:"ANGST: DIZZINESS of staring into your own FREEDOM", icon:"😰" },
+  { ch:15, q:"Kierkegaard wrote under pseudonyms primarily to:", c:["Avoid censorship","Present multiple viewpoints without claiming authority over the reader's choice","Hide his identity","He was ashamed"], a:1, hook:"PSEUDONYMS: don't TELL the truth — make you CHOOSE it", icon:"🎭" },
+
+  // Ch.16: Marx
+  { ch:16, q:"Historical materialism holds that:", c:["Ideas drive history","Material conditions of production shape social and ideological structures","History is random","Only great individuals change history"], a:1, hook:"MARX: the FACTORY floor shapes COURTHOUSE and CHURCH", icon:"🏭" },
+  { ch:16, q:"Alienation in Marx refers to:", c:["Feeling lonely","Worker's estrangement from product, process, species-being, and others","Immigration","Mental illness"], a:1, hook:"ALIENATION: you MAKE it but it's NOT yours and YOU'RE not you", icon:"🔗" },
+  { ch:16, q:"Marx's critique of ideology argues:", c:["All ideas are equally valid","Dominant ideas reflect and serve ruling class interests","Ideology is always religious","Philosophy is never ideological"], a:1, hook:"IDEOLOGY: ruling CLASS's ideas become 'common sense'", icon:"🎩" },
+  { ch:16, q:"The labor theory of value holds that:", c:["Prices are arbitrary","Value is determined by socially necessary labor time","Only skilled labor creates value","Value is purely subjective"], a:1, hook:"VALUE = HOURS of human LABOR crystallized in the thing", icon:"⏱️" },
+  { ch:16, q:"Marx's eleventh thesis on Feuerbach states:", c:["Religion is opium of people","Philosophers have only interpreted the world; the point is to change it","History repeats itself","The state will wither"], a:1, hook:"Don't just INTERPRET the world — CHANGE it", icon:"🔨" },
+
+  // Ch.17: Nietzsche
+  { ch:17, q:"'Death of God' refers to:", c:["Literal divine death","Collapse of the metaphysical-moral framework grounding Western values","Atheism as simple fact","End of church attendance"], a:1, hook:"GOD IS DEAD: the FOUNDATION crumbling under EVERYTHING", icon:"⚰️" },
+  { ch:17, q:"Will to power is best understood as:", c:["Political domination","Drive toward self-overcoming, growth, and creative expression","Physical strength","Military conquest"], a:1, hook:"WILL TO POWER: not domination — OVERCOMING yourself", icon:"🦅" },
+  { ch:17, q:"Eternal recurrence as existential test asks:", c:["Whether time is circular","Could you affirm living your exact life infinitely?","Whether reincarnation is real","If history will repeat"], a:1, hook:"ETERNAL RETURN: say YES to living THIS life AGAIN and AGAIN?", icon:"♾️" },
+  { ch:17, q:"Master vs slave morality distinguishes:", c:["Good/bad (noble) from good/evil (resentful inversion)","Rich vs poor","Eastern vs Western","Ancient vs modern"], a:0, hook:"MASTER says 'I am GOOD'; SLAVE says 'THEY are evil'", icon:"⚔️" },
+  { ch:17, q:"Nietzsche's genealogical method examines:", c:["Family trees","Historical and power-laden origins of moral concepts","Genetic inheritance","Archaeological evidence"], a:1, hook:"GENEALOGY: dig up BURIED history behind 'good' and 'evil'", icon:"⛏️" },
+
+  // Ch.17 DEEP DIVE: Nietzsche (Panel of Experts expansion)
+  { ch:17, q:"In 'On Truth and Lies,' Nietzsche argues truth is fundamentally:", c:["Correspondence between propositions and states of affairs","A mobile army of metaphors worn smooth and forgotten as metaphors","A regulative ideal for science","Intersubjective agreement among rational agents"], a:1, hook:"WORN COINS forget they're METAPHORS pretending to be GOLD", icon:"🪙" },
+  { ch:17, q:"Nietzsche's perspectivism holds that:", c:["All perspectives are equally valid so truth is impossible","We should multiply perspectives for greater objectivity, not abandon the concept","Perspectives are determined entirely by biology","Only the philosopher accesses things-in-themselves"], a:1, hook:"More EYES on the elephant means BETTER seeing, not NO elephant", icon:"👁️" },
+  { ch:17, q:"The 'columbarium' analogy in 'On Truth and Lies' refers to:", c:["Death of metaphysical systems","The rigid conceptual grid entombing fluid particularity of experience","Historical cemetery of failed philosophies","Cultural preservation of dead beliefs"], a:1, hook:"Living BUTTERFLIES pinned in a CONCEPT GRAVEYARD of urns", icon:"🦋" },
+  { ch:17, q:"Nietzsche's critique of the 'will to truth' suggests:", c:["It assumes truth is more valuable than untruth without examining this","Humans are biologically incapable of truth","Truth is only accessible through revelation","Scientific method proved truth is relative"], a:0, hook:"Nobody QUESTIONS the cop who says TRUTH is always worth CATCHING", icon:"🔍" },
+  { ch:17, q:"The three essays of the Genealogy target, respectively:", c:["Religion, science, and art","Slave revolt in morals, internalized cruelty (bad conscience), and the ascetic ideal","Master morality, slave morality, and Übermensch","Greek tragedy, Christian theology, and modern nihilism"], a:1, hook:"SLAVE revolt, CRUELTY turned inward, PRIEST gives suffering MEANING", icon:"📜" },
+  { ch:17, q:"Ressentiment differs from ordinary resentment because it:", c:["Is a passing emotional state","Is a creative world-constructing disposition generating an entire moral framework by negating the other","Applies only to religious communities","Represents healthy response to injustice"], a:1, hook:"The POWERLESS build a whole MORAL UNIVERSE from a creative NO", icon:"🕳️" },
+  { ch:17, q:"Bad conscience originates in:", c:["Guilt from original sin","Internalization of aggressive instincts when humans were enclosed within society and peace","Rational reflection on moral failings","The tradition from Socrates to Kant"], a:1, hook:"CAGED beast turns CLAWS inward and calls the WOUNDS a soul", icon:"🐾" },
+  { ch:17, q:"The ascetic ideal dominated history because:", c:["Asceticism is natural","It was the only interpretation giving meaning to suffering — humans prefer meaning through self-denial to meaninglessness","Religious institutions enforced it politically","It accurately describes body-spirit relations"], a:1, hook:"SUFFERING with a WHY beats comfortable NOTHING every time", icon:"⛓️" },
+  { ch:17, q:"Nietzsche's critique of pity holds compassion is dangerous because it:", c:["Wastes resources on the undeserving","Preserves what should perish, spreads suffering contagiously, diminishes dignity","Is only felt by the weak","Contradicts Kantian ethics"], a:1, hook:"PITY is a CONTAGION that MULTIPLIES suffering while pretending to CURE", icon:"🤒" },
+  { ch:17, q:"The Übermensch is best characterized as:", c:["A biologically superior race","A creative individual who gives style to character and legislates new values after God's death","A Darwinian endpoint","An ascetic saint overcoming bodily desires"], a:1, hook:"Not a SUPERMAN — an ARTIST who makes their LIFE the canvas", icon:"🎨" },
+  { ch:17, q:"The 'last man' represents:", c:["The final philosopher completing Western tradition","Humanity's comfortable risk-averse pursuit of mere happiness — antithesis of the Übermensch","The last Christian in a secular age","The nihilist who destroys all values"], a:1, hook:"BLINKS and says 'we invented HAPPINESS' while choosing WARM SMALLNESS", icon:"😌" },
+  { ch:17, q:"Amor fati demands that one:", c:["Accept suffering passively as divinely ordained","Affirm every detail of life including suffering as necessary and willed","Believe in determinism and abandon free will","Love only fortunate outcomes"], a:1, hook:"Not just ENDURE the storm — WANT it again, every LIGHTNING bolt", icon:"⚡" },
+  { ch:17, q:"In Birth of Tragedy, the Apollonian and Dionysian represent:", c:["Reason vs emotion simply","Two complementary drives: individuation/form/dream vs dissolution/intoxication/primal unity","Greek vs Roman traditions","Conscious vs unconscious processes"], a:1, hook:"APOLLO sculpts the DREAM; DIONYSUS DISSOLVES you into the screaming chorus", icon:"🎭" },
+  { ch:17, q:"Nietzsche's break with Wagner reveals that:", c:["Nietzsche envied Wagner's fame","Wagner's late works embodied the ascetic ideal and Christian renunciation Nietzsche saw as life-denying","Nietzsche preferred Italian opera","Wagner's music was technically inferior"], a:1, hook:"PARSIFAL kneels and Nietzsche sees his HERO become a PRIEST", icon:"🎻" },
+  { ch:17, q:"Passive nihilism differs from active nihilism in that:", c:["Passive destroys institutions, active builds","Passive is weary resignation; active is destructive clearing preceding new value-creation","Active denies reality, passive affirms","No meaningful distinction exists"], a:1, hook:"PASSIVE nihilist SITS in ruins; ACTIVE grabs a HAMMER and builds", icon:"🔨" },
+  { ch:17, q:"Later Dionysian affirmation differs from Birth of Tragedy because:", c:["Nietzsche abandoned the concept","It no longer requires Apollonian counterbalance — Dionysian alone affirms life without metaphysical consolation","Later Dionysian is purely musical","Nietzsche replaced Dionysus with Zarathustra"], a:1, hook:"Young DIONYSUS needed APOLLO's shield; MATURE Dionysus DANCES in fire ALONE", icon:"🔥" },
+  { ch:17, q:"Self-overcoming (Selbstüberwindung) is best understood as:", c:["Suppressing desires through Stoic willpower","A continuous process whereby life overcomes its own established forms","A one-time breakthrough to higher consciousness","Physical training and bodily discipline"], a:1, hook:"The SNAKE must shed its OWN skin or CHOKE — morality eats ITSELF to grow", icon:"🐍" },
+
+  // Ch.18: Phenomenology
+  { ch:18, q:"Husserl's epoché involves:", c:["Reducing phenomena to physical causes","Suspending assumptions about existence to describe pure consciousness","Eliminating all experience","Simplifying theories"], a:1, hook:"EPOCHÉ: BRACKET the world — describe what APPEARS", icon:"🔲" },
+  { ch:18, q:"Intentionality in Husserl means:", c:["All actions are deliberate","Consciousness is always consciousness OF something","Intentions determine morality","Mental states are physical"], a:1, hook:"INTENTIONALITY: consciousness is an ARROW pointing at SOMETHING", icon:"➡️" },
+  { ch:18, q:"Merleau-Ponty's contribution centers on:", c:["Pure logical analysis","The lived body as primary site of perception and meaning","Rejecting all philosophy","Mathematical phenomenology"], a:1, hook:"MERLEAU-PONTY: you don't HAVE a body — you ARE a body", icon:"🤲" },
+  { ch:18, q:"Husserl's lifeworld (Lebenswelt) refers to:", c:["Biological life","The pre-theoretical everyday world grounding all knowledge","A virtual reality","The scientific worldview"], a:1, hook:"LEBENSWELT: the EVERYDAY world science FORGOT it stood on", icon:"🌎" },
+  { ch:18, q:"Noesis and noema refer to:", c:["Subject and object externally","Act of consciousness and its intended content as correlated","Two types of logic","Theory and practice"], a:1, hook:"NOESIS: the THINKING. NOEMA: the THOUGHT. Always a PAIR.", icon:"🔗" },
+
+  // Ch.19: Heidegger
+  { ch:19, q:"Dasein is best understood as:", c:["German for existence","The human way of being characterized by understanding its own being","Pure consciousness","The universe"], a:1, hook:"DASEIN: the being that ASKS what it MEANS to be", icon:"❓" },
+  { ch:19, q:"Being-toward-death means:", c:["Morbid preoccupation","Authentic existence requires confronting one's finitude","Fear of death","Suicide as philosophy"], a:1, hook:"BEING-TOWARD-DEATH: FINITUDE makes every choice REAL", icon:"⏳" },
+  { ch:19, q:"The ontological difference distinguishes:", c:["Being and beings — what it means to be vs particular things","God and creation","Mind and body","Theory and practice"], a:0, hook:"ONTOLOGICAL DIFFERENCE: not WHAT exists but what EXISTING means", icon:"🔍" },
+  { ch:19, q:"Thrownness (Geworfenheit) refers to:", c:["Physical motion","Finding oneself already situated in a world not chosen","Being rejected by society","An athletic metaphor"], a:1, hook:"THROWNNESS: didn't pick your language or era — but HERE you are", icon:"🎯" },
+  { ch:19, q:"The Seinsfrage that Heidegger says was forgotten refers to:", c:["Whether God exists","The fundamental question of what it means for anything to be","Whether beings exist","Human rights"], a:1, hook:"SEINSFRAGE: philosophy forgot its FIRST question", icon:"💤" },
+
+  // Ch.20: Existentialism
+  { ch:20, q:"'Existence precedes essence' means:", c:["Existence is better","Humans have no predetermined nature; they create themselves through choices","Physical existence is prior to mental","Essence is illusion"], a:1, hook:"EXISTENCE FIRST: THROWN into being — now MAKE yourself", icon:"🚪" },
+  { ch:20, q:"Bad faith (mauvaise foi) describes:", c:["Religious hypocrisy","Self-deception about radical freedom by pretending to be determined","Lying to others","Breaking promises"], a:1, hook:"BAD FAITH: pretending you HAD no choice when you ALWAYS did", icon:"🎭" },
+  { ch:20, q:"De Beauvoir's 'one is not born but becomes a woman' argues:", c:["Biological sex doesn't exist","Gender is socially constructed through lived experience","Women should become men","Birth is irrelevant"], a:1, hook:"DE BEAUVOIR: WOMAN is not born — MADE by society", icon:"♀️" },
+  { ch:20, q:"Camus's absurdism holds:", c:["Life is meaningless therefore suicide","The conflict between human demand for meaning and universe's silence must be lived through","Everything is absurd except philosophy","Absurdity proves God"], a:1, hook:"CAMUS: universe WON'T answer — LIVE anyway like SISYPHUS", icon:"🪨" },
+  { ch:20, q:"Radical freedom entails:", c:["Political freedom only","We are condemned to be free — even refusing to choose is a choice","Freedom requires wealth","Freedom is illusion"], a:1, hook:"CONDEMNED TO BE FREE: choosing NOT to choose IS a choice", icon:"⛓️" },
+
+  // Ch.21: Early Analytic
+  { ch:21, q:"Frege's sense/reference distinction shows:", c:["All words are meaningless","Two expressions can refer to same object but present it differently","Sense and reference are identical","Only reference matters"], a:1, hook:"FREGE: MORNING STAR and EVENING STAR — same planet, different SENSE", icon:"⭐" },
+  { ch:21, q:"Russell's theory of definite descriptions solves puzzles about:", c:["Poetry","How 'the present king of France' can be meaningful when nothing satisfies it","Mathematical proof","Ethical language"], a:1, hook:"RUSSELL: 'present KING of FRANCE' — meaningful, just FALSE", icon:"👑" },
+  { ch:21, q:"Early Wittgenstein's picture theory holds:", c:["Language creates reality","Propositions are logical pictures of possible states of affairs","All language is metaphorical","Language can't represent"], a:1, hook:"PICTURE THEORY: a sentence is a SNAPSHOT of how world COULD be", icon:"📸" },
+  { ch:21, q:"The verification principle states:", c:["All statements are true","A statement is meaningful only if analytically true or empirically verifiable","Verification is impossible","Only religious statements are meaningful"], a:1, hook:"VERIFICATION: can't CHECK it or PROVE it by logic? NONSENSE", icon:"🔬" },
+  { ch:21, q:"The Vienna Circle's primary target was:", c:["Mathematics","Metaphysics — regarded as cognitively meaningless","Ethics","Religion exclusively"], a:1, hook:"VIENNA CIRCLE: metaphysics isn't wrong — it's MEANINGLESS", icon:"🚫" },
+
+  // Ch.22: Later Wittgenstein
+  { ch:22, q:"'Language games' suggests that:", c:["Language is formal logic","Meaning arises from use within rule-governed social activities","Language is a game with no rules","Only one language game exists"], a:1, hook:"LANGUAGE GAMES: meaning isn't in the WORD — it's how you PLAY", icon:"🎲" },
+  { ch:22, q:"The private language argument contends:", c:["Some people speak privately","A language for one person is impossible because meaning requires public criteria","Private thoughts don't exist","Only public speech counts"], a:1, hook:"PRIVATE LANGUAGE: if only YOU can check it, it's not a RULE", icon:"🔒" },
+  { ch:22, q:"'Family resemblance' replaces:", c:["Biological classification","The assumption all things sharing a name share common essence","Family therapy","Genetic analysis"], a:1, hook:"FAMILY RESEMBLANCE: no single THREAD — just overlapping SIMILARITIES", icon:"🧶" },
+  { ch:22, q:"Austin's speech act theory distinguishes:", c:["True and false only","Locutionary, illocutionary, and perlocutionary acts","Written and spoken","Formal and informal"], a:1, hook:"AUSTIN: saying 'I DO' at altar isn't describing — it's DOING", icon:"💍" },
+  { ch:22, q:"Later Wittgenstein says philosophical problems arise from:", c:["Insufficient data","Language going on holiday — misusing words outside their game","Moral failings","Political oppression"], a:1, hook:"Philosophy is SICKNESS caused by language on HOLIDAY", icon:"🏖️" },
+
+  // Ch.23: Pragmatism
+  { ch:23, q:"Peirce's pragmatic maxim holds meaning consists in:", c:["Dictionary definition","The conceivable practical effects its object could have","Emotional resonance","Logical form alone"], a:1, hook:"PEIRCE: meaning IS what DIFFERENCE it makes in PRACTICE", icon:"🔧" },
+  { ch:23, q:"James's pragmatic truth holds:", c:["Truth is fixed eternally","True ideas are those that prove useful and verifiable in experience","There is no truth","Truth is majority vote"], a:1, hook:"JAMES: truth is what WORKS — the idea that PAYS its way", icon:"💰" },
+  { ch:23, q:"Dewey's instrumentalism treats ideas as:", c:["Mirror images of reality","Tools for solving problems arising from experience","Innate structures","Mere illusions"], a:1, hook:"DEWEY: an idea is a TOOL — judge by whether it FIXES the problem", icon:"🔨" },
+  { ch:23, q:"Peirce's fallibilism holds:", c:["Everything is false","All knowledge claims are revisable and none absolutely certain","Certainty is easily achieved","Only science is fallible"], a:1, hook:"FALLIBILISM: hold beliefs FIRMLY but certainty LIGHTLY", icon:"🤏" },
+  { ch:23, q:"Rorty's neo-pragmatism rejects:", c:["Democracy","The idea that philosophy mirrors nature or serves as foundation","Science","All analytic philosophy"], a:1, hook:"RORTY: philosophy isn't a MIRROR — it's a CONVERSATION", icon:"🪞" },
+
+  // Ch.24: Post-Structuralism
+  { ch:24, q:"Derrida's deconstruction reveals:", c:["All texts are meaningless","Unstable binary oppositions and suppressed meanings within texts","How to build better arguments","Author's true intention"], a:1, hook:"DECONSTRUCTION: every text UNDERMINES its own hierarchy", icon:"🏗️" },
+  { ch:24, q:"Foucault's power/knowledge holds:", c:["Knowledge is always neutral","Power and knowledge are mutually constitutive","Only politicians have power","Knowledge eliminates power"], a:1, hook:"FOUCAULT: POWER decides what counts as TRUE", icon:"🔌" },
+  { ch:24, q:"Différance combines:", c:["Two French words","Both 'to differ' and 'to defer' — meaning is always deferred, never fully present","Difference and indifference","Two math operations"], a:1, hook:"DIFFERANCE: meaning DIFFERS and DEFERS — always ALMOST, never ARRIVED", icon:"⏳" },
+  { ch:24, q:"Foucault's genealogical method examines:", c:["Family histories","How current practices emerged from contingent power struggles, not progress","DNA evidence","Ancient genealogies"], a:1, hook:"FOUCAULT: the PRISON wasn't evolved — it was INVENTED for control", icon:"🔎" },
+  { ch:24, q:"Deleuze and Guattari's rhizome opposes:", c:["All plant life","Hierarchical tree models with a non-hierarchical networked model","Democracy","Capitalism exclusively"], a:1, hook:"RHIZOME: knowledge isn't a TREE — it's GRASS spreading everywhere", icon:"🌿" },
+
+  // Ch.25: Contemporary Ethics
+  { ch:25, q:"Rawls's veil of ignorance is where:", c:["People are blindfolded","Agents choose justice principles without knowing their social position","Ignorance is celebrated","Philosophers ignore reality"], a:1, hook:"VEIL: choose society's rules WITHOUT knowing your PLACE", icon:"🎭" },
+  { ch:25, q:"Nozick's entitlement theory holds:", c:["Wealth should be equal","Distribution is just if from just acquisitions and voluntary transfers","Only the state distributes justly","Justice requires maximizing utility"], a:1, hook:"NOZICK: nobody STOLE, nobody FORCED — the outcome is JUST", icon:"🤝" },
+  { ch:25, q:"Singer's expanding circle relies on:", c:["Religious authority","Equal consideration of interests regardless of species","Legal precedent","Economic analysis"], a:1, hook:"SINGER: if it can SUFFER, its suffering COUNTS — species IRRELEVANT", icon:"🐾" },
+  { ch:25, q:"MacIntyre's After Virtue argues:", c:["Morality is in excellent condition","Modern moral discourse is fragmented from losing its Aristotelian framework","Only Kantian ethics is valid","Ethics should be abandoned"], a:1, hook:"MACINTYRE: arguing with FRAGMENTS of a BROKEN tradition", icon:"🏺" },
+  { ch:25, q:"The trolley problem tests intuitions about:", c:["Transportation policy","The distinction between killing and letting die, consequentialism vs deontology","Train engineering","Urban planning"], a:1, hook:"TROLLEY: PULL the lever? The answer reveals your DEEPEST wiring", icon:"🚃" },
+
+  // Ch.26: Essential Greek & Latin Terminology
+  { ch:26, q:"The Greek term ἀρχή (arche) in Pre-Socratic philosophy refers to:", c:["The moral law governing conduct","The first principle or ultimate source from which all things originate","The logical structure of valid arguments","The cyclical pattern of cosmic renewal"], a:1, hook:"ARCH-enemy of chaos: the FIRST PRINCIPLE stands", icon:"🏛️" },
+  { ch:26, q:"The philosophical range of λόγος (logos) is best captured as:", c:["Exclusively divine speech or revelation","Only mathematical calculation","Reason, rational account, proportion, and the intelligible structure of reality","A synonym for mythos"], a:2, hook:"LOGOS wears MANY hats: WORD, REASON, cosmic RATIO", icon:"🔤" },
+  { ch:26, q:"Aristotle distinguishes νοῦς (nous) from other faculties because nous:", c:["Operates through sensory perception","Grasps first principles through non-discursive intellectual intuition","Produces opinions that may be true or false","Functions only in practical deliberation"], a:1, hook:"NOUS needs no PROOF — it SEES the axiom NAKED", icon:"👁️" },
+  { ch:26, q:"Aristotle defines φύσις (physis) as:", c:["Conventional laws established by agreement","An internal principle of motion and rest belonging to a thing essentially","Divine design imposed on matter","The aggregate of observable phenomena"], a:1, hook:"PHYSIS has its OWN engine — MOTION from WITHIN", icon:"🌱" },
+  { ch:26, q:"τέχνη (techne) differs from ἐπιστήμη (episteme) in that:", c:["Techne is theoretical, episteme practical","Techne concerns production of contingent outcomes; episteme concerns demonstrable necessary truths","They are synonymous","Techne is superior to episteme"], a:1, hook:"TECHNE builds the BRIDGE; EPISTEME proves it WON'T FALL", icon:"🔨" },
+  { ch:26, q:"Plato places δόξα (doxa) as:", c:["The highest form of knowledge","An intermediate state between ignorance and knowledge, directed at becoming","Identical with episteme when justified","A term for false beliefs only"], a:1, hook:"DOXA floats BETWEEN blind ignorance and the SUNLIT Forms", icon:"☁️" },
+  { ch:26, q:"Heidegger's interpretation of ἀλήθεια (aletheia) as 'unconcealment' challenges:", c:["Truth as beauty","Truth as coherence","Truth as correctness or correspondence (adaequatio)","Truth as usefulness"], a:2, hook:"ALETHEIA rips the VEIL off — not MATCHING but REVEALING", icon:"🪬" },
+  { ch:26, q:"οὐσία (ousia) shifts from Plato to Aristotle in that:", c:["Plato uses it for material substance, Aristotle for Forms","Plato applies it to Forms; Aristotle redeploys it for individual substances (primary ousia)","Both use it identically for 'property'","Aristotle rejects the term entirely"], a:1, hook:"OUSIA migrates: Plato's FORM becomes Aristotle's THIS-HERE HORSE", icon:"🐴" },
+  { ch:26, q:"Aristotle's τέλος (telos) implies that:", c:["All change is random","A thing's nature is understood by the end toward which it develops","Purpose applies only to artifacts","Teleology was rejected by all later Greeks"], a:1, hook:"The ACORN already DREAMS of the OAK — TELOS pulls from FUTURE", icon:"🎯" },
+  { ch:26, q:"εὐδαιμονία (eudaimonia) differs from modern 'happiness' because:", c:["It means momentary pleasure","It denotes an objective condition of living well over a complete life, not transient feeling","It applies only to gods","It is exclusively Stoic"], a:1, hook:"EUDAIMONIA is a WHOLE LIFE scored, not a FRIDAY NIGHT mood", icon:"🌟" },
+  { ch:26, q:"φρόνησις (phronesis) differs from σοφία (sophia) in that phronesis:", c:["Concerns eternal necessary truths","Is practical wisdom about what is good in particular variable circumstances","Is inferior to techne","Requires no experience"], a:1, hook:"PHRONESIS reads the ROOM; SOPHIA reads the COSMOS", icon:"⚖️" },
+  { ch:26, q:"ἀρετή (arete) is inadequately translated as 'virtue' because:", c:["It applies only to moral character","It means excellence in function — applies to knives, horses, and humans alike","It is Roman, not Greek","It refers only to courage"], a:1, hook:"A sharp KNIFE has ARETE too — EXCELLENCE of FUNCTION, not just morals", icon:"⚔️" },
+  { ch:26, q:"ἀταραξία (ataraxia) is the telos of which two Hellenistic schools?", c:["Platonism and Aristotelianism","Stoicism and Cynicism","Epicureanism and Pyrrhonian Skepticism","Neoplatonism and Hermeticism"], a:2, hook:"EPICURUS and PYRRHO both chase the UNTROUBLED LAKE", icon:"🧘" },
+  { ch:26, q:"ἀπορία (aporia) in Platonic dialogue functions as:", c:["A logical fallacy to avoid","A trick to humiliate interlocutors","A productive perplexity clearing false confidence for genuine inquiry","Proof that knowledge is impossible"], a:2, hook:"APORIA is the STING of the GADFLY — you THOUGHT you knew", icon:"🐝" },
+  { ch:26, q:"δύναμις/ἐνέργεια (dynamis/energeia) resolve:", c:["Free will and determinism","How change is possible — potentiality is real but not yet actualized","The mind-body problem","Existence of mathematical objects"], a:1, hook:"MARBLE holds a STATUE in DYNAMIS; sculptor brings ENERGEIA", icon:"🗿" },
+  { ch:26, q:"The debate over κάθαρσις (catharsis) in the Poetics concerns whether it means:", c:["Physical vomiting from spectacle","Moral purification of emotions, or cognitive clarification of what pity and fear are","Elimination of all emotion","A religious rite only"], a:1, hook:"CATHARSIS: does tragedy FLUSH emotions or CLARIFY them? STILL fighting", icon:"🎭" },
+  { ch:26, q:"Plato condemns μίμησις (mimesis) in Republic X because:", c:["Art produces exact replicas of Forms","Art is an imitation of an imitation — thrice removed from truth","Art is too original","Mimesis applies only to music"], a:1, hook:"MIMESIS: COPY of a COPY — painting of a BED is THREE steps from REAL", icon:"🖼️" },
+  { ch:26, q:"The Latin substantia distorts the Greek ousia because:", c:["It literally means 'standing under,' importing a substrate metaphor absent from ousia's root meaning of being","They are etymologically identical","It was never used by major philosophers","It refers only to material objects"], a:0, hook:"SUBSTANTIA sneaks a FLOOR underneath — ousia just said BEING", icon:"🏗️" },
+  { ch:26, q:"The Scholastic esse/essentia distinction maps onto:", c:["Whether God exists or not","The difference between the act of existing and what a thing is","Whether universals are real or nominal","Soul versus body"], a:1, hook:"ESSE asks IF it IS; ESSENTIA asks WHAT it is — Thomas's REAL DISTINCTION", icon:"📐" },
+  { ch:26, q:"Aquinas distinguishes intellectus from ratio by holding that:", c:["They are perfect synonyms","Intellectus directly grasps principles; ratio moves discursively from premises to conclusions","Ratio is superior to intellectus","Intellectus applies only to God"], a:1, hook:"INTELLECTUS catches the ball; RATIO runs the PLAY step by step", icon:"🧠" },
+  { ch:26, q:"The Scholastic accidens refers to:", c:["A random event","A property not part of a substance's essence — can change without the substance ceasing to be","The essential definition","An error in reasoning"], a:1, hook:"ACCIDENS rides the bus but ISN'T the bus — remove PAINT, still a BUS", icon:"🚌" },
+  { ch:26, q:"Kant's a priori / a posteriori distinguishes:", c:["Knowledge before vs after age of reason","Analytic vs synthetic judgments","Knowledge independent of experience vs dependent on experience","Theoretical vs practical philosophy"], a:2, hook:"A PRIORI knows BEFORE looking; A POSTERIORI must GO CHECK", icon:"🔍" },
+  { ch:26, q:"Descartes' res cogitans / res extensa establishes:", c:["Mind and body as attributes of one substance","Two mutually exclusive substances — thinking (unextended) and extended (unthinking)","Res extensa refers to God's nature","Both describe aspects of material bodies"], a:1, hook:"RES COGITANS thinks but has NO SIZE; RES EXTENSA fills SPACE but can't THINK", icon:"🪞" },
+  { ch:26, q:"The Stoic λόγος differs from Heraclitus's in that the Stoics:", c:["Rejected logos entirely","Identified logos with a materialist divine fire (pneuma) governing all nature as cosmic providence","Used logos only for human speech","Restricted logos to formal logic"], a:1, hook:"Stoic LOGOS is FIRE with a PLAN — divine PNEUMA thinking through MATTER", icon:"🔥" },
+  { ch:26, q:"Augustine's transformation of voluntas (will) is significant because he:", c:["Denied humans possess free will","Elevated will to a faculty independent of and sometimes opposed to intellect, absent in Greek thought","Used it as synonym for Aristotelian orexis","Restricted it to divine will only"], a:1, hook:"VOLUNTAS rebels against REASON — Augustine gives WILL its own THRONE", icon:"👑" },
+];
+
+// ═══════════ CLIENT NAMES & CONSEQUENCE TEMPLATES ═══════════
+const CLIENT_NAMES = [
+  "Sophia","Theo","Alethia","Marcus","Hypatia","René","Simone","Friedrich",
+  "Hannah","Søren","Jean-Paul","Iris","Ludwig","Arendt","Zeno","Diotima",
+  "Emmanuel","Rosa","John","Martha","Judith","Charles","Gayatri","Kwame"
+];
+
+const CHAPTER_CONSEQUENCES = {
+  1:  "Your student pointed out a Pre-Socratic counter-argument you missed.",
+  2:  "Your student pointed out a Pre-Socratic counter-argument you missed.",
+  3:  "Your student pointed out a Pre-Socratic counter-argument you missed.",
+  4:  "Your student pointed out a Pre-Socratic counter-argument you missed.",
+  5:  "Your student pointed out a Pre-Socratic counter-argument you missed.",
+  6:  "A medieval scholar would have caught that distinction.",
+  7:  "A medieval scholar would have caught that distinction.",
+  8:  "A medieval scholar would have caught that distinction.",
+  9:  "A medieval scholar would have caught that distinction.",
+  10: "Your reading of the early modern text was imprecise.",
+  11: "Your reading of the early modern text was imprecise.",
+  12: "Your reading of the early modern text was imprecise.",
+  13: "The 19th-century context was misapplied in your analysis.",
+  14: "The 19th-century context was misapplied in your analysis.",
+  15: "The 19th-century context was misapplied in your analysis.",
+  16: "The 19th-century context was misapplied in your analysis.",
+  17: "The 19th-century context was misapplied in your analysis.",
+  18: "Your phenomenological or analytic framing had a gap.",
+  19: "Your phenomenological or analytic framing had a gap.",
+  20: "Your phenomenological or analytic framing had a gap.",
+  21: "Your phenomenological or analytic framing had a gap.",
+  22: "Your phenomenological or analytic framing had a gap.",
+  23: "A contemporary colleague challenged your interpretation.",
+  24: "A contemporary colleague challenged your interpretation.",
+  25: "A contemporary colleague challenged your interpretation.",
+};
+const DEFAULT_CONSEQUENCE = "A philosophical subtlety was overlooked in your reasoning.";
+
+// ═══════════ GAME STATE ═══════════
+const SAVE_KEY = 'the-athenaeum-v1';
+let state = loadState();
+
+function defaultState() {
+  return {
+    chapterScores: {},  // { chapterId: { correct: 0, total: 0, mastered: false } }
+    totalCorrect: 0,
+    totalAnswered: 0,
+    streak: 0,
+    bestStreak: 0,
+    soundEnabled: false,
+  };
+}
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(SAVE_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch(e) {}
+  return defaultState();
+}
+
+function saveState() {
+  localStorage.setItem(SAVE_KEY, JSON.stringify(state));
+}
+
+// ═══════════ SOUND ENGINE (Web Audio API) ═══════════
+let audioCtx = null;
+
+function getAudioCtx() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return audioCtx;
+}
+
+function playSound(type) {
+  if (!state.soundEnabled) return;
+  try {
+    const ctx = getAudioCtx();
+    if (type === 'correct') {
+      // Short bright chime
+      [880, 1100, 1320].forEach((freq, i) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain); gain.connect(ctx.destination);
+        osc.type = 'sine'; osc.frequency.value = freq;
+        const t = ctx.currentTime + i * 0.08;
+        gain.gain.setValueAtTime(0.18, t);
+        gain.gain.exponentialRampToValueAtTime(0.001, t + 0.3);
+        osc.start(t); osc.stop(t + 0.3);
+      });
+    } else if (type === 'wrong') {
+      // Low thud
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.type = 'sawtooth'; osc.frequency.value = 120;
+      osc.frequency.exponentialRampToValueAtTime(60, ctx.currentTime + 0.15);
+      gain.gain.setValueAtTime(0.25, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
+      osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.25);
+    } else if (type === 'flip') {
+      // Subtle click
+      const buf = ctx.createBuffer(1, ctx.sampleRate * 0.05, ctx.sampleRate);
+      const data = buf.getChannelData(0);
+      for (let i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / data.length) * 0.15;
+      const src = ctx.createBufferSource();
+      src.buffer = buf;
+      src.connect(ctx.destination);
+      src.start(ctx.currentTime);
+    } else if (type === 'certified') {
+      // Plate slam + triumphant chord
+      const thud = ctx.createOscillator();
+      const thudGain = ctx.createGain();
+      thud.connect(thudGain); thudGain.connect(ctx.destination);
+      thud.type = 'sawtooth'; thud.frequency.value = 80;
+      thud.frequency.exponentialRampToValueAtTime(40, ctx.currentTime + 0.2);
+      thudGain.gain.setValueAtTime(0.35, ctx.currentTime);
+      thudGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
+      thud.start(ctx.currentTime); thud.stop(ctx.currentTime + 0.25);
+
+      [523, 659, 784, 1047].forEach((freq, i) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain); gain.connect(ctx.destination);
+        osc.type = 'sine'; osc.frequency.value = freq;
+        const t = ctx.currentTime + 0.15 + i * 0.1;
+        gain.gain.setValueAtTime(0.15, t);
+        gain.gain.exponentialRampToValueAtTime(0.001, t + 0.5);
+        osc.start(t); osc.stop(t + 0.5);
+      });
+    }
+  } catch(e) {}
+}
+
+function updateSoundBtn() {
+  const btn = $('sound-toggle-btn');
+  if (!btn) return;
+  btn.textContent = state.soundEnabled ? '🔊' : '🔇';
+  if (state.soundEnabled) btn.classList.add('active');
+  else btn.classList.remove('active');
+}
+
+// ═══════════ STUDY SESSION STATE ═══════════
+let currentChapter = null;
+let currentCards = [];
+let currentCardIndex = 0;
+let sessionCorrect = 0;
+let answered = false;
+
+// ═══════════ DOM REFS ═══════════
+const $ = id => document.getElementById(id);
+
+// ═══════════ HUB ═══════════
+function renderHub() {
+  const grid = $('chapter-grid');
+  grid.innerHTML = '';
+
+  let masteredCount = 0;
+
+  CHAPTERS.forEach(ch => {
+    const score = state.chapterScores[ch.id] || { correct: 0, total: 0, mastered: false };
+    if (score.mastered) masteredCount++;
+
+    const card = document.createElement('div');
+    card.className = 'chapter-card' + (score.mastered ? ' mastered' : '');
+    card.onclick = () => startStudy(ch.id);
+
+    // Mastery dots
+    const questions = QUESTIONS.filter(q => q.ch === ch.id);
+    let dotsHtml = '<div class="chapter-mastery">';
+    for (let i = 0; i < questions.length; i++) {
+      dotsHtml += `<div class="mastery-dot${score.mastered ? ' correct' : (i < score.correct ? ' filled' : '')}"></div>`;
+    }
+    dotsHtml += '</div>';
+
+    card.innerHTML = `
+      <div class="chapter-icon">${ch.icon}</div>
+      <div class="chapter-num">CH ${String(ch.id).padStart(2,'0')}</div>
+      <div class="chapter-title">${ch.title}</div>
+      ${dotsHtml}
+    `;
+    grid.appendChild(card);
+  });
+
+  // Stats
+  $('stat-mastered').textContent = masteredCount;
+  $('stat-streak').textContent = state.streak;
+  $('stat-accuracy').textContent = state.totalAnswered > 0
+    ? Math.round((state.totalCorrect / state.totalAnswered) * 100) + '%'
+    : '—';
+
+  // Play mode button
+  const playWrapper = $('play-mode-wrapper');
+  if (masteredCount >= 3) {
+    playWrapper.innerHTML = `<button class="play-mode-btn" onclick="startPlayMode()">📜 PHILOSOPHICAL DIALOGUE</button>`;
+  } else {
+    const needed = 3 - masteredCount;
+    playWrapper.innerHTML = `<div class="play-mode-locked">Certify ${needed} more chapter${needed !== 1 ? 's' : ''} to unlock Philosophical Dialogues</div>`;
+  }
+
+  // Barbell visualization
+  renderBarbell(masteredCount);
+  updateSoundBtn();
+}
+
+// ═══════════ STUDY MODE ═══════════
+function startStudy(chapterId) {
+  currentChapter = CHAPTERS.find(c => c.id === chapterId);
+  currentCards = shuffle(QUESTIONS.filter(q => q.ch === chapterId));
+  currentCardIndex = 0;
+  sessionCorrect = 0;
+  answered = false;
+
+  $('study-chapter-name').textContent = `Ch ${currentChapter.id}: ${currentChapter.title}`;
+
+  showScreen('study-screen');
+  showCard();
+}
+
+function showCard() {
+  const card = currentCards[currentCardIndex];
+  const card3d = $('card-3d');
+
+  // Reset flip
+  card3d.classList.remove('flipped');
+  answered = false;
+
+  // Progress
+  $('study-progress').textContent = `${currentCardIndex + 1} / ${currentCards.length}`;
+
+  // Front — vary accent color per card so repeat runs look different
+  const accentHues = [30, 35, 25, 40, 20, 45, 15, 28, 38, 32];
+  const hue = accentHues[currentCardIndex % accentHues.length];
+  const cardFront = card3d.querySelector('.card-front');
+  cardFront.style.borderColor = `hsl(${hue}, 60%, 25%)`;
+
+  $('card-style-tag').textContent = currentChapter.style;
+  $('card-chapter-tag').textContent = `CH ${String(currentChapter.id).padStart(2,'0')}`;
+  $('card-hook-icon').textContent = card.icon;
+  $('card-hook-text').textContent = varyQuestionText(card.hook, true);
+
+  // Back — shuffle choice order so correct answer moves position each run
+  const shuffledChoices = shuffleChoices(card.c, card.a);
+  $('card-question').textContent = varyQuestionText(card.q, false);
+  const choicesEl = $('card-choices');
+  choicesEl.innerHTML = '';
+  const keys = ['A','B','C','D'];
+  shuffledChoices.choices.forEach((choice, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'choice-btn';
+    btn.innerHTML = `<span class="choice-key">${keys[i]}</span>${choice}`;
+    btn.onclick = (e) => { e.stopPropagation(); answerQuestion(i, shuffledChoices.correctIndex); };
+    choicesEl.appendChild(btn);
+  });
+
+  // Store shuffled correct index for this card
+  currentCards[currentCardIndex]._shuffledCorrect = shuffledChoices.correctIndex;
+
+  // Hide result bar
+  const resultBar = $('result-bar');
+  resultBar.classList.remove('show', 'is-correct', 'is-wrong');
+}
+
+// ═══════════ ANTI-PATTERN-MATCHING ═══════════
+
+// Shuffle choices and return new correct index
+function shuffleChoices(choices, correctIndex) {
+  const correctAnswer = choices[correctIndex];
+  const indexed = choices.map((c, i) => ({ text: c, wasCorrect: i === correctIndex }));
+  // Fisher-Yates shuffle
+  for (let i = indexed.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [indexed[i], indexed[j]] = [indexed[j], indexed[i]];
+  }
+  return {
+    choices: indexed.map(c => c.text),
+    correctIndex: indexed.findIndex(c => c.wasCorrect)
+  };
+}
+
+// Vary question/hook text with synonym substitutions so repeat runs read differently
+// Keeps the core knowledge intact — only changes phrasing, not meaning
+const SYNONYMS = {
+  'what': ['which', 'what'],
+  'refers to': ['describes', 'refers to', 'is defined as', 'means'],
+  'is defined as': ['refers to', 'is defined as', 'means', 'describes'],
+  'primarily': ['mainly', 'primarily', 'chiefly', 'most commonly'],
+  'is used to': ['serves to', 'is used to', 'helps to', 'functions to'],
+  'should': ['ought to', 'should', 'needs to', 'must'],
+  'important because': ['critical because', 'important because', 'essential because', 'key because'],
+  'recommended': ['advised', 'recommended', 'suggested', 'encouraged'],
+  'includes': ['involves', 'includes', 'contains', 'encompasses'],
+  'the primary': ['the main', 'the primary', 'the chief', 'the principal'],
+  'increases': ['rises', 'increases', 'goes up', 'elevates'],
+  'decreases': ['drops', 'decreases', 'goes down', 'reduces'],
+  'approximately': ['roughly', 'approximately', 'about', 'around'],
+  'typically': ['usually', 'typically', 'generally', 'commonly'],
+  'involves': ['entails', 'involves', 'requires', 'includes'],
+  'helps by': ['works by', 'helps by', 'aids by', 'assists by'],
+  'must be': ['needs to be', 'must be', 'has to be', 'should be'],
+};
+
+// Slight hook variations — keep the mnemonic core, shift the wrapper
+const HOOK_PREFIXES = [
+  'Remember:', 'Think:', 'Picture this:', 'Key idea:', 'Recall:',
+  '', '', '', '' // empty strings = no prefix most of the time
+];
+const HOOK_CONNECTORS = {
+  '=': ['=', 'means', 'equals', '→'],
+  '—': ['—', '–', ':', '...'],
+  ':': [':', '—', ' →', '...'],
+};
+
+function varyHookText(text) {
+  let varied = text;
+  // Randomly add a prefix (~40% of the time)
+  const prefix = HOOK_PREFIXES[Math.floor(Math.random() * HOOK_PREFIXES.length)];
+  if (prefix) {
+    // Only lowercase first char if it's not part of an ALL-CAPS mnemonic word
+    const firstWord = varied.split(' ')[0];
+    const isAllCaps = firstWord === firstWord.toUpperCase() && firstWord.length > 1;
+    varied = prefix + ' ' + (isAllCaps ? varied : varied.charAt(0).toLowerCase() + varied.slice(1));
+  }
+  // Swap connectors
+  for (const [orig, alts] of Object.entries(HOOK_CONNECTORS)) {
+    if (varied.includes(orig)) {
+      varied = varied.replace(orig, alts[Math.floor(Math.random() * alts.length)]);
+      break; // only one swap per hook
+    }
+  }
+  return varied;
+}
+
+function varyQuestionText(text, isHook) {
+  if (isHook) return varyHookText(text);
+  let varied = text;
+  for (const [phrase, replacements] of Object.entries(SYNONYMS)) {
+    if (varied.toLowerCase().includes(phrase)) {
+      const replacement = replacements[Math.floor(Math.random() * replacements.length)];
+      // Case-preserving replace (first occurrence only)
+      const regex = new RegExp(phrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+      varied = varied.replace(regex, (match) => {
+        // Preserve original capitalization
+        if (match[0] === match[0].toUpperCase()) {
+          return replacement.charAt(0).toUpperCase() + replacement.slice(1);
+        }
+        return replacement;
+      });
+    }
+  }
+  return varied;
+}
+
+function flipCard() {
+  if (!answered) {
+    $('card-3d').classList.toggle('flipped');
+    playSound('flip');
+  }
+}
+
+function answerQuestion(choiceIndex, shuffledCorrectIndex) {
+  if (answered) return;
+  answered = true;
+
+  const card = currentCards[currentCardIndex];
+  const correctIdx = shuffledCorrectIndex !== undefined ? shuffledCorrectIndex : card._shuffledCorrect;
+  const isCorrect = choiceIndex === correctIdx;
+  const buttons = $('card-choices').querySelectorAll('.choice-btn');
+
+  // Mark buttons — use shuffled correct index
+  buttons.forEach((btn, i) => {
+    btn.classList.add('disabled');
+    if (i === correctIdx) btn.classList.add('correct');
+    if (i === choiceIndex && !isCorrect) btn.classList.add('wrong');
+  });
+
+  // Update state
+  state.totalAnswered++;
+  if (isCorrect) {
+    state.totalCorrect++;
+    state.streak++;
+    if (state.streak > state.bestStreak) state.bestStreak = state.streak;
+    sessionCorrect++;
+  } else {
+    state.streak = 0;
+  }
+  saveState();
+
+  // Play sound
+  playSound(isCorrect ? 'correct' : 'wrong');
+
+  // Show result bar
+  const resultBar = $('result-bar');
+  resultBar.classList.add('show', isCorrect ? 'is-correct' : 'is-wrong');
+  $('result-text').textContent = isCorrect ? 'CORRECT' : 'WRONG';
+}
+
+function nextCard() {
+  currentCardIndex++;
+
+  if (currentCardIndex >= currentCards.length) {
+    // Chapter complete
+    finishChapter();
+    return;
+  }
+
+  showCard();
+}
+
+function finishChapter() {
+  const total = currentCards.length;
+  const correct = sessionCorrect;
+  const threshold = Math.ceil(total * 0.8); // 80% correct to certify
+  const mastered = correct >= threshold;
+
+  // Save chapter score
+  if (!state.chapterScores[currentChapter.id]) {
+    state.chapterScores[currentChapter.id] = { correct: 0, total: 0, mastered: false };
+  }
+  const cs = state.chapterScores[currentChapter.id];
+  cs.correct = Math.max(cs.correct, correct);
+  cs.total = total;
+  if (mastered) cs.mastered = true;
+  saveState();
+
+  // Play sound
+  if (mastered) playSound('certified');
+
+  // Show modal
+  $('modal-icon').textContent = mastered ? '🏆' : '💪';
+  $('modal-title').textContent = mastered ? 'CERTIFIED' : 'KEEP GRINDING';
+  $('modal-subtitle').textContent = `Ch ${currentChapter.id}: ${currentChapter.title}`;
+  $('modal-score').innerHTML = `${correct} <span class="of-total">/ ${total}</span>`;
+
+  const badge = $('modal-badge');
+  badge.textContent = mastered ? '✓ CHAPTER CERTIFIED' : `NEED ${threshold}/${total} TO CERTIFY`;
+  badge.className = 'modal-badge ' + (mastered ? 'certified' : 'retry');
+
+  $('modal-overlay').classList.add('show');
+}
+
+// ═══════════ NAVIGATION ═══════════
+function showScreen(screenId) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  $(screenId).classList.add('active');
+  if (screenId === 'hub-screen') renderHub();
+}
+
+// ═══════════ EVENT LISTENERS ═══════════
+$('card-3d').addEventListener('click', flipCard);
+$('back-btn').addEventListener('click', () => showScreen('hub-screen'));
+$('result-next').addEventListener('click', (e) => { e.stopPropagation(); nextCard(); });
+$('modal-btn').addEventListener('click', () => {
+  $('modal-overlay').classList.remove('show');
+  showScreen('hub-screen');
+});
+$('play-back-btn').addEventListener('click', () => showScreen('hub-screen'));
+$('session-modal-btn').addEventListener('click', () => {
+  $('session-modal').classList.remove('show');
+  showScreen('hub-screen');
+});
+
+// Sound toggle
+$('sound-toggle-btn').addEventListener('click', () => {
+  state.soundEnabled = !state.soundEnabled;
+  saveState();
+  updateSoundBtn();
+  if (state.soundEnabled) playSound('flip');
+});
+
+// Settings dropdown
+$('settings-btn').addEventListener('click', (e) => {
+  e.stopPropagation();
+  const dd = $('settings-dropdown');
+  const open = dd.classList.toggle('open');
+  if (open) {
+    const masteredCount = Object.values(state.chapterScores).filter(s => s.mastered).length;
+    $('settings-certified').textContent = masteredCount + ' / 26';
+    $('settings-answered').textContent = state.totalAnswered;
+    $('settings-accuracy').textContent = state.totalAnswered > 0
+      ? Math.round((state.totalCorrect / state.totalAnswered) * 100) + '%' : '—';
+    $('settings-streak').textContent = state.bestStreak || 0;
+  }
+});
+
+document.addEventListener('click', () => {
+  $('settings-dropdown').classList.remove('open');
+});
+
+$('settings-reset-btn').addEventListener('click', (e) => {
+  e.stopPropagation();
+  const masteredCount = Object.values(state.chapterScores).filter(s => s.mastered).length;
+  const accuracy = state.totalAnswered > 0
+    ? Math.round((state.totalCorrect / state.totalAnswered) * 100) + '%' : '—';
+  const msg = `Reset all progress?\n\nCurrent stats:\n• Certified: ${masteredCount}/25\n• Total answered: ${state.totalAnswered}\n• Accuracy: ${accuracy}\n• Best streak: ${state.bestStreak || 0}\n\nThis cannot be undone.`;
+  if (confirm(msg)) {
+    localStorage.removeItem(SAVE_KEY);
+    state = defaultState();
+    saveState();
+    $('settings-dropdown').classList.remove('open');
+    showScreen('hub-screen');
+  }
+});
+
+// Keyboard shortcuts
+document.addEventListener('keydown', (e) => {
+  if ($('study-screen').classList.contains('active')) {
+    const key = e.key.toLowerCase();
+    if (key === ' ' || key === 'enter') {
+      e.preventDefault();
+      if (!$('card-3d').classList.contains('flipped')) {
+        flipCard();
+      } else if (answered) {
+        nextCard();
+      }
+    }
+    if ($('card-3d').classList.contains('flipped') && !answered) {
+      const keyMap = { a: 0, b: 1, c: 2, d: 3 };
+      if (key in keyMap) answerQuestion(keyMap[key]);
+    }
+  }
+});
+
+// ═══════════ BARBELL VISUALIZATION ═══════════
+const TIERS = [
+  { min: 0,  max: 0,  name: 'TABULA RASA',    tier: 't0' },
+  { min: 1,  max: 5,  name: 'STUDENT',         tier: 't1' },
+  { min: 6,  max: 12, name: 'INTERLOCUTOR',    tier: 't2' },
+  { min: 13, max: 19, name: 'DIALECTICIAN',    tier: 't3' },
+  { min: 20, max: 24, name: 'PHILOSOPHER',     tier: 't4' },
+  { min: 25, max: 26, name: 'SAGE',            tier: 't5' },
+];
+
+function getTier(count) {
+  return TIERS.find(t => count >= t.min && count <= t.max) || TIERS[0];
+}
+
+function getPlateTier(index) {
+  if (index < 3) return 'tier-1';
+  if (index < 7) return 'tier-2';
+  if (index < 12) return 'tier-3';
+  if (index < 17) return 'tier-4'; // extra plate on one side
+  return 'tier-5';
+}
+
+function renderBarbell(masteredCount) {
+  // Split plates: 13 left, 12 right (25 total)
+  const leftCount = Math.ceil(masteredCount / 2);
+  const rightCount = Math.floor(masteredCount / 2);
+  const leftTotal = 13;
+  const rightTotal = 12;
+
+  const leftRack = $('plates-left');
+  const rightRack = $('plates-right');
+  leftRack.innerHTML = '';
+  rightRack.innerHTML = '';
+
+  // Render left plates
+  for (let i = 0; i < leftTotal; i++) {
+    const plate = document.createElement('div');
+    if (i < leftCount) {
+      plate.className = `plate loaded ${getPlateTier(i)}`;
+      plate.style.animationDelay = `${i * 0.05}s`;
+    } else {
+      plate.className = 'plate empty';
+    }
+    leftRack.appendChild(plate);
+  }
+
+  // Render right plates
+  for (let i = 0; i < rightTotal; i++) {
+    const plate = document.createElement('div');
+    if (i < rightCount) {
+      plate.className = `plate loaded ${getPlateTier(i)}`;
+      plate.style.animationDelay = `${i * 0.05}s`;
+    } else {
+      plate.className = 'plate empty';
+    }
+    rightRack.appendChild(plate);
+  }
+
+  // Tier badge
+  const tier = getTier(masteredCount);
+  const tierNameEl = $('tier-name');
+  tierNameEl.textContent = tier.name;
+  tierNameEl.className = 'tier-name ' + tier.tier;
+  $('tier-count').textContent = `${masteredCount} / 26 certified`;
+
+  // Volume display — one volume per certified chapter
+  const totalWeight = masteredCount;
+  $('weight-display').innerHTML = `<span class="weight-num">${totalWeight}</span> VOLUMES`;
+
+  // Stage tier class for glow
+  const stage = $('barbell-stage');
+  stage.className = 'barbell-stage';
+  if (masteredCount >= 26) stage.classList.add('tier-5');
+  else if (masteredCount >= 20) stage.classList.add('tier-4');
+  else if (masteredCount >= 13) stage.classList.add('tier-3');
+
+  // Sparks for tier 3+
+  renderSparks(masteredCount);
+}
+
+let sparkInterval = null;
+let emberInterval = null;
+function renderSparks(masteredCount) {
+  if (sparkInterval) { clearInterval(sparkInterval); sparkInterval = null; }
+  if (emberInterval) { clearInterval(emberInterval); emberInterval = null; }
+  const container = $('spark-container');
+  container.innerHTML = '';
+
+  if (masteredCount < 13) return;
+
+  const intensity = masteredCount >= 26 ? 200 : masteredCount >= 20 ? 400 : 800;
+  const colors = masteredCount >= 26
+    ? ['#fff8e0', '#f0c848', '#e8a838', '#ffffff']
+    : masteredCount >= 20
+    ? ['#f0c848', '#e8a838', '#c89020']
+    : ['#e8a838', '#c75b39'];
+
+  sparkInterval = setInterval(() => {
+    const spark = document.createElement('div');
+    spark.className = 'spark';
+    const x = 30 + Math.random() * 40;
+    const y = 30 + Math.random() * 40;
+    const size = 2 + Math.random() * 3; // 2-5px variation
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    spark.style.left = x + '%';
+    spark.style.top = y + '%';
+    spark.style.width = size + 'px';
+    spark.style.height = size + 'px';
+    spark.style.background = color;
+    spark.style.boxShadow = `0 0 ${size + 2}px ${color}`;
+    spark.style.setProperty('--sx', (Math.random() - 0.5) * 60 + 'px');
+    spark.style.setProperty('--sy', -(20 + Math.random() * 40) + 'px');
+    spark.style.animation = `sparkFloat ${0.6 + Math.random() * 0.8}s ease-out forwards`;
+    container.appendChild(spark);
+    setTimeout(() => spark.remove(), 1500);
+  }, intensity);
+
+  // Legendary tier: occasional larger "ember" particles
+  if (masteredCount >= 26) {
+    emberInterval = setInterval(() => {
+      const ember = document.createElement('div');
+      ember.className = 'spark';
+      const x = 20 + Math.random() * 60;
+      const y = 40 + Math.random() * 30;
+      const size = 8 + Math.random() * 2; // 8-10px
+      const emberColors = ['#fff8e0', '#f0c848', '#e8a838'];
+      const color = emberColors[Math.floor(Math.random() * emberColors.length)];
+      ember.style.left = x + '%';
+      ember.style.top = y + '%';
+      ember.style.width = size + 'px';
+      ember.style.height = size + 'px';
+      ember.style.background = color;
+      ember.style.boxShadow = `0 0 ${size + 4}px ${color}, 0 0 ${size * 2}px rgba(232,168,56,0.4)`;
+      ember.style.setProperty('--sx', (Math.random() - 0.5) * 30 + 'px');
+      ember.style.setProperty('--sy', -(30 + Math.random() * 50) + 'px');
+      ember.style.animation = `sparkFloat ${1.2 + Math.random() * 0.8}s ease-out forwards`;
+      container.appendChild(ember);
+      setTimeout(() => ember.remove(), 2500);
+    }, 600);
+  }
+}
+
+// ═══════════ PLAY MODE ═══════════
+let playSession = null;
+
+function getCertifiedChapters() {
+  return CHAPTERS.filter(ch => {
+    const score = state.chapterScores[ch.id];
+    return score && score.mastered;
+  });
+}
+
+function generateClientProfile(certifiedChapters) {
+  const name = CLIENT_NAMES[Math.floor(Math.random() * CLIENT_NAMES.length)];
+  const age = 18 + Math.floor(Math.random() * 58); // 18-75
+
+  // Pick 2-3 chapters for the profile
+  const shuffledChs = shuffle(certifiedChapters);
+  const numChs = Math.min(shuffledChs.length, 2 + Math.floor(Math.random() * 2));
+  const selectedChs = shuffledChs.slice(0, numChs);
+
+  // Build philosophical positions from chapter topics
+  const conditionMap = {
+    1: "committed monist philosophical position",
+    2: "Socratic dialogues as primary method",
+    3: "strong Platonic realism about Forms",
+    4: "Aristotelian naturalist commitments",
+    5: "Stoic ethical framework",
+    6: "Neoplatonist metaphysical assumptions",
+    7: "Avicennian essence-existence distinction",
+    8: "Thomistic natural theology",
+    9: "nominalist rejection of universals",
+    10: "Renaissance humanist perspective",
+    11: "rationalist a priori methodology",
+    12: "strict empiricist epistemology",
+    13: "Kantian transcendental idealism",
+    14: "Hegelian dialectical method",
+    15: "Kierkegaardian existential concern",
+    16: "Marxist materialist analysis",
+    17: "Nietzschean perspectivism",
+    18: "phenomenological reduction method",
+    19: "Heideggerian analysis of Dasein",
+    20: "existentialist radical freedom thesis",
+    21: "logicist program in philosophy",
+    22: "ordinary language philosophy",
+    23: "pragmatist theory of truth",
+    24: "post-structuralist textual analysis",
+    25: "contemporary contractarian ethics",
+  };
+
+  const goalMap = {
+    1: "reconstruct Presocratic cosmology",
+    2: "master the Socratic method",
+    3: "defend the Theory of Forms",
+    4: "apply Aristotelian virtue ethics",
+    5: "achieve Stoic ataraxia",
+    6: "trace the emanation hierarchy",
+    7: "reconcile faith and reason",
+    8: "argue for natural theology",
+    9: "defend nominalism against realism",
+    10: "recover classical humanist virtue",
+    11: "ground knowledge in clear and distinct ideas",
+    12: "trace all knowledge to experience",
+    13: "resolve the antinomies of pure reason",
+    14: "grasp the dialectical movement of Geist",
+    15: "make the leap to authentic existence",
+    16: "critique ideological superstructure",
+    17: "affirm eternal recurrence",
+    18: "describe the structure of intentionality",
+    19: "retrieve the question of Being",
+    20: "live authentically in radical freedom",
+    21: "reduce philosophy to logical analysis",
+    22: "dissolve philosophical pseudo-problems",
+    23: "apply pragmatic maxim to truth",
+    24: "deconstruct metaphysical binary oppositions",
+    25: "construct a just social contract",
+  };
+
+  const conditions = selectedChs.map(ch => conditionMap[ch.id] || ch.title).join(', ');
+  const goalCh = selectedChs[0];
+  const goal = goalMap[goalCh.id] || 'pursue philosophical inquiry';
+
+  return { name, age, conditions, goal, chapters: selectedChs };
+}
+
+function startPlayMode() {
+  const certifiedChs = getCertifiedChapters();
+  if (certifiedChs.length < 3) return;
+
+  const profile = generateClientProfile(certifiedChs);
+
+  // Pull 4 questions from the profile chapters
+  let pool = [];
+  profile.chapters.forEach(ch => {
+    pool = pool.concat(QUESTIONS.filter(q => q.ch === ch.id));
+  });
+  pool = shuffle(pool).slice(0, 4);
+
+  playSession = {
+    profile,
+    questions: pool,
+    currentIndex: 0,
+    results: [],       // { correct: bool, chapterId: number }
+    complications: [], // string messages
+    answered: false,
+  };
+
+  showScreen('play-screen');
+  renderPlayDecision();
+}
+
+function renderPlayDecision() {
+  const session = playSession;
+  const q = session.questions[session.currentIndex];
+  const content = $('play-content');
+
+  $('play-progress').textContent = `Decision ${session.currentIndex + 1}/${session.questions.length}`;
+
+  let html = '';
+
+  // Client card
+  html += `
+    <div class="client-card">
+      <div class="client-card-header">Interlocutor Profile</div>
+      <div class="client-name">${session.profile.name}, ${session.profile.age}</div>
+      <div class="client-details">${session.profile.conditions}</div>
+      <div class="client-goal">Thesis: ${session.profile.goal}</div>
+    </div>
+  `;
+
+  // Complication warning if previous was wrong
+  const lastResult = session.results[session.results.length - 1];
+  if (lastResult && !lastResult.correct) {
+    const consequence = CHAPTER_CONSEQUENCES[lastResult.chapterId] || DEFAULT_CONSEQUENCE;
+    html += `
+      <div class="complication-warning">
+        <span class="warn-icon">⚠️</span>
+        <span><strong>COMPLICATION:</strong> ${consequence}</span>
+      </div>
+    `;
+  }
+
+  // Decision question
+  const keys = ['A','B','C','D'];
+  let choicesHtml = '';
+  q.c.forEach((choice, i) => {
+    choicesHtml += `<button class="choice-btn" onclick="answerPlayDecision(${i})"><span class="choice-key">${keys[i]}</span>${choice}</button>`;
+  });
+
+  html += `
+    <div class="decision-card">
+      <div class="decision-label">Decision ${session.currentIndex + 1}</div>
+      <div class="decision-question">${q.q}</div>
+      <div class="decision-choices" id="decision-choices">${choicesHtml}</div>
+    </div>
+  `;
+
+  content.innerHTML = html;
+  session.answered = false;
+}
+
+function answerPlayDecision(choiceIndex) {
+  const session = playSession;
+  if (session.answered) return;
+  session.answered = true;
+
+  const q = session.questions[session.currentIndex];
+  const isCorrect = choiceIndex === q.a;
+
+  // Record result
+  session.results.push({ correct: isCorrect, chapterId: q.ch });
+  if (!isCorrect) {
+    const consequence = CHAPTER_CONSEQUENCES[q.ch] || DEFAULT_CONSEQUENCE;
+    session.complications.push({ text: consequence, hook: q.hook, chapterId: q.ch });
+  }
+
+  // Update state stats
+  state.totalAnswered++;
+  if (isCorrect) {
+    state.totalCorrect++;
+    state.streak++;
+    if (state.streak > state.bestStreak) state.bestStreak = state.streak;
+  } else {
+    state.streak = 0;
+  }
+  saveState();
+
+  // Highlight choices
+  const choicesBtns = document.querySelectorAll('#decision-choices .choice-btn');
+  choicesBtns.forEach((btn, i) => {
+    btn.classList.add('disabled');
+    if (i === q.a) btn.classList.add('correct');
+    if (i === choiceIndex && !isCorrect) btn.classList.add('wrong');
+  });
+
+  playSound(isCorrect ? 'correct' : 'wrong');
+
+  // Auto-advance after brief delay
+  setTimeout(() => {
+    session.currentIndex++;
+    if (session.currentIndex >= session.questions.length) {
+      showSessionSummary();
+    } else {
+      renderPlayDecision();
+    }
+  }, 1200);
+}
+
+function showSessionSummary() {
+  const session = playSession;
+  const correct = session.results.filter(r => r.correct).length;
+  const total = session.results.length;
+  const allCorrect = correct === total;
+
+  $('session-modal-icon').textContent = allCorrect ? '🏅' : correct >= total / 2 ? '💪' : '📋';
+  $('session-modal-title').textContent = 'SESSION COMPLETE';
+  $('session-modal-client').textContent = `${session.profile.name}'s Dialogue`;
+  $('session-modal-score').innerHTML = `${correct} <span class="of-total">/ ${total} decisions correct</span>`;
+
+  let bodyHtml = '';
+
+  if (session.complications.length > 0) {
+    bodyHtml += `<div class="session-complications">`;
+    bodyHtml += `<div class="session-complications-title">Complications (${session.complications.length})</div>`;
+    session.complications.forEach(c => {
+      bodyHtml += `<div class="complication-item">${c.text}</div>`;
+    });
+    bodyHtml += `</div>`;
+
+    bodyHtml += `<div class="review-hooks">`;
+    bodyHtml += `<div class="review-hooks-title">Review These Hooks</div>`;
+    session.complications.forEach(c => {
+      bodyHtml += `<div class="hook-item">${c.hook}</div>`;
+    });
+    bodyHtml += `</div>`;
+  } else {
+    bodyHtml += `<div style="text-align:center;padding:12px 0;color:var(--success);font-size:0.85rem;letter-spacing:1px;">No complications — clean session!</div>`;
+  }
+
+  $('session-modal-body').innerHTML = bodyHtml;
+  $('session-modal').classList.add('show');
+
+  if (allCorrect) playSound('certified');
+}
+
+// ═══════════ UTILS ═══════════
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// ═══════════ INIT ═══════════
+renderHub();
+</script>
+</body>
+</html>
