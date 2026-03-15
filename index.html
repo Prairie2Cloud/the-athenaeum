@@ -1130,6 +1130,67 @@ body::after {
   color: var(--chalk-dim);
 }
 
+/* ═══════════ DEPTH BADGES ═══════════ */
+.depth-badge {
+  display: inline-block;
+  margin-top: 5px;
+  padding: 2px 7px;
+  border-radius: 10px;
+  font-family: var(--font-mono);
+  font-size: 0.52rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.depth-badge.deep-dive {
+  background: rgba(212,168,67,0.15);
+  border: 1px solid var(--amber-dim);
+  color: var(--amber);
+}
+
+.depth-badge.foundations {
+  background: transparent;
+  border: 1px solid rgba(138,128,112,0.4);
+  color: var(--chalk-dim);
+}
+
+/* ═══════════ REVIEW BUTTON ═══════════ */
+.review-mode-btn {
+  background: none;
+  border: 1px solid var(--iron-light);
+  color: var(--chalk-dim);
+  font-family: var(--font-display);
+  font-size: 1rem;
+  letter-spacing: 2px;
+  padding: 10px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 8px;
+}
+
+.review-mode-btn:hover { border-color: var(--amber-dim); color: var(--amber); }
+
+/* ═══════════ REFLECTION MODAL ═══════════ */
+.reflection-topic-btn {
+  width: 100%;
+  background: rgba(212,168,67,0.08);
+  border: 1px solid var(--amber-dim);
+  color: var(--chalk);
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  padding: 10px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s;
+  margin-bottom: 6px;
+}
+
+.reflection-topic-btn:hover { background: rgba(212,168,67,0.18); border-color: var(--amber); }
+.reflection-topic-btn.queued { background: rgba(74,158,107,0.12); border-color: var(--success); color: var(--success); cursor: default; }
+
 /* ═══════════ RESPONSIVE ═══════════ */
 @media (max-width: 600px) {
   .chapter-grid {
@@ -1214,7 +1275,7 @@ body::after {
 
   <div class="bottom-bar">
     <p>Tap a chapter to study · 80% correct to certify</p>
-    <p style="margin-top:4px;opacity:0.4;">v1.0.0</p>
+    <p style="margin-top:4px;opacity:0.4;">v1.2</p>
   </div>
 </div>
 
@@ -1291,38 +1352,49 @@ body::after {
   </div>
 </div>
 
+<!-- ═══════════ REFLECTION MODAL ═══════════ -->
+<div class="modal-overlay" id="reflection-modal">
+  <div class="modal-content" style="max-width:400px;">
+    <div class="modal-icon">🪞</div>
+    <div class="modal-title" id="reflection-title" style="font-size:1.5rem;letter-spacing:2px;">CERTIFIED</div>
+    <div class="modal-subtitle" style="margin-bottom:16px;">What felt shakiest?</div>
+    <div id="reflection-topics" style="margin-bottom:20px;"></div>
+    <button class="modal-btn" id="reflection-back-btn">Back to Hub</button>
+  </div>
+</div>
+
 <script>
 // ═══════════════════════════════════════════════
 // THE ATHENAEUM — HISTORY OF PHILOSOPHY GAME
 // ═══════════════════════════════════════════════
 
 const CHAPTERS = [
-  { id: 1, title: "Pre-Socratics", icon: "🌊", style: "ancient" },
-  { id: 2, title: "Socrates & the Examined Life", icon: "🏛️", style: "dialogue" },
-  { id: 3, title: "Plato — Forms & the Republic", icon: "☀️", style: "idealist" },
-  { id: 4, title: "Aristotle — Substance & Virtue", icon: "🔬", style: "naturalist" },
-  { id: 5, title: "Hellenistic Schools", icon: "🏺", style: "ancient" },
-  { id: 6, title: "Neoplatonism", icon: "✨", style: "mystical" },
-  { id: 7, title: "Islamic Golden Age", icon: "🌙", style: "illuminated" },
-  { id: 8, title: "Medieval Christian Thought", icon: "⛪", style: "gothic" },
-  { id: 9, title: "Late Medieval & Nominalism", icon: "✂️", style: "gothic" },
-  { id: 10, title: "Renaissance Philosophy", icon: "🎭", style: "renaissance" },
-  { id: 11, title: "Rationalism", icon: "🔺", style: "geometric" },
-  { id: 12, title: "Empiricism", icon: "👁️", style: "empirical" },
-  { id: 13, title: "Kant — Critical Philosophy", icon: "⚖️", style: "enlightenment" },
-  { id: 14, title: "German Idealism", icon: "🌀", style: "romantic" },
-  { id: 15, title: "Kierkegaard & Proto-Existentialism", icon: "😰", style: "romantic" },
-  { id: 16, title: "Marx & Historical Materialism", icon: "⚒️", style: "industrial" },
-  { id: 17, title: "Nietzsche", icon: "🦅", style: "dramatic" },
-  { id: 18, title: "Phenomenology", icon: "🎯", style: "modernist" },
-  { id: 19, title: "Heidegger", icon: "🪵", style: "modernist" },
-  { id: 20, title: "Existentialism", icon: "🚪", style: "noir" },
-  { id: 21, title: "Early Analytic Philosophy", icon: "📐", style: "logical" },
-  { id: 22, title: "Later Wittgenstein & Ordinary Language", icon: "💬", style: "logical" },
-  { id: 23, title: "Pragmatism", icon: "🔧", style: "american" },
-  { id: 24, title: "Post-Structuralism & Deconstruction", icon: "🔀", style: "postmodern" },
-  { id: 25, title: "Contemporary Ethics & Political Philosophy", icon: "🗳️", style: "contemporary" },
-  { id: 26, title: "Essential Greek & Latin Terminology", icon: "📜", style: "ancient" },
+  { id: 1, title: "Pre-Socratics", icon: "🌊", style: "ancient", depth: "intro" },
+  { id: 2, title: "Socrates & the Examined Life", icon: "🏛️", style: "dialogue", depth: "intro" },
+  { id: 3, title: "Plato — Forms & the Republic", icon: "☀️", style: "idealist", depth: "deep_dive" },
+  { id: 4, title: "Aristotle — Substance & Virtue", icon: "🔬", style: "naturalist", depth: "deep_dive" },
+  { id: 5, title: "Hellenistic Schools", icon: "🏺", style: "ancient", depth: "intro" },
+  { id: 6, title: "Neoplatonism", icon: "✨", style: "mystical", depth: "intro" },
+  { id: 7, title: "Islamic Golden Age", icon: "🌙", style: "illuminated", depth: "core" },
+  { id: 8, title: "Medieval Christian Thought", icon: "⛪", style: "gothic", depth: "core" },
+  { id: 9, title: "Late Medieval & Nominalism", icon: "✂️", style: "gothic", depth: "intro" },
+  { id: 10, title: "Renaissance Philosophy", icon: "🎭", style: "renaissance", depth: "intro" },
+  { id: 11, title: "Rationalism", icon: "🔺", style: "geometric", depth: "core" },
+  { id: 12, title: "Empiricism", icon: "👁️", style: "empirical", depth: "core" },
+  { id: 13, title: "Kant — Critical Philosophy", icon: "⚖️", style: "enlightenment", depth: "deep_dive" },
+  { id: 14, title: "German Idealism", icon: "🌀", style: "romantic", depth: "deep_dive" },
+  { id: 15, title: "Kierkegaard & Proto-Existentialism", icon: "😰", style: "romantic", depth: "core" },
+  { id: 16, title: "Marx & Historical Materialism", icon: "⚒️", style: "industrial", depth: "core" },
+  { id: 17, title: "Nietzsche", icon: "🦅", style: "dramatic", depth: "deep_dive" },
+  { id: 18, title: "Phenomenology", icon: "🎯", style: "modernist", depth: "core" },
+  { id: 19, title: "Heidegger", icon: "🪵", style: "modernist", depth: "core" },
+  { id: 20, title: "Existentialism", icon: "🚪", style: "noir", depth: "core" },
+  { id: 21, title: "Early Analytic Philosophy", icon: "📐", style: "logical", depth: "core" },
+  { id: 22, title: "Later Wittgenstein & Ordinary Language", icon: "💬", style: "logical", depth: "core" },
+  { id: 23, title: "Pragmatism", icon: "🔧", style: "american", depth: "core" },
+  { id: 24, title: "Post-Structuralism & Deconstruction", icon: "🔀", style: "postmodern", depth: "core" },
+  { id: 25, title: "Contemporary Ethics & Political Philosophy", icon: "🗳️", style: "contemporary", depth: "core" },
+  { id: 26, title: "Essential Greek & Latin Terminology", icon: "📜", style: "ancient", depth: "deep_dive" },
 ];
 
 const QUESTIONS = [
@@ -1675,13 +1747,19 @@ function defaultState() {
     streak: 0,
     bestStreak: 0,
     soundEnabled: false,
+    wrongAnswers: [],   // array of { ch, qIndex } — spaced repetition queue
   };
+}
+
+function migrateState(s) {
+  if (!s.wrongAnswers) s.wrongAnswers = [];
+  return s;
 }
 
 function loadState() {
   try {
     const raw = localStorage.getItem(SAVE_KEY);
-    if (raw) return JSON.parse(raw);
+    if (raw) return migrateState(JSON.parse(raw));
   } catch(e) {}
   return defaultState();
 }
@@ -1799,10 +1877,18 @@ function renderHub() {
     }
     dotsHtml += '</div>';
 
+    let depthBadgeHtml = '';
+    if (ch.depth === 'deep_dive') {
+      depthBadgeHtml = '<div class="depth-badge deep-dive">Deep Dive</div>';
+    } else if (ch.depth === 'intro') {
+      depthBadgeHtml = '<div class="depth-badge foundations">Foundations</div>';
+    }
+
     card.innerHTML = `
       <div class="chapter-icon">${ch.icon}</div>
       <div class="chapter-num">CH ${String(ch.id).padStart(2,'0')}</div>
       <div class="chapter-title">${ch.title}</div>
+      ${depthBadgeHtml}
       ${dotsHtml}
     `;
     grid.appendChild(card);
@@ -1817,12 +1903,19 @@ function renderHub() {
 
   // Play mode button
   const playWrapper = $('play-mode-wrapper');
+  let playHtml = '';
   if (masteredCount >= 3) {
-    playWrapper.innerHTML = `<button class="play-mode-btn" onclick="startPlayMode()">📜 PHILOSOPHICAL DIALOGUE</button>`;
+    playHtml += `<button class="play-mode-btn" onclick="startPlayMode()">📜 PHILOSOPHICAL DIALOGUE</button>`;
   } else {
     const needed = 3 - masteredCount;
-    playWrapper.innerHTML = `<div class="play-mode-locked">Certify ${needed} more chapter${needed !== 1 ? 's' : ''} to unlock Philosophical Dialogues</div>`;
+    playHtml += `<div class="play-mode-locked">Certify ${needed} more chapter${needed !== 1 ? 's' : ''} to unlock Philosophical Dialogues</div>`;
   }
+
+  // Review button — appears once 10+ total questions answered and there are wrong answers
+  if (state.totalAnswered >= 10 && state.wrongAnswers && state.wrongAnswers.length > 0) {
+    playHtml += `<br><button class="review-mode-btn" onclick="startReviewMode()">🔁 REVIEW (${state.wrongAnswers.length})</button>`;
+  }
+  playWrapper.innerHTML = playHtml;
 
   // Barbell visualization
   renderBarbell(masteredCount);
@@ -1831,6 +1924,7 @@ function renderHub() {
 
 // ═══════════ STUDY MODE ═══════════
 function startStudy(chapterId) {
+  isReviewMode = false;
   currentChapter = CHAPTERS.find(c => c.id === chapterId);
   currentCards = shuffle(QUESTIONS.filter(q => q.ch === chapterId));
   currentCardIndex = 0;
@@ -2007,8 +2101,18 @@ function answerQuestion(choiceIndex, shuffledCorrectIndex) {
     state.streak++;
     if (state.streak > state.bestStreak) state.bestStreak = state.streak;
     sessionCorrect++;
+    // Remove from wrongAnswers if answered correctly (in any mode)
+    if (!state.wrongAnswers) state.wrongAnswers = [];
+    const wrongKey = `${card.ch}:${QUESTIONS.indexOf(card)}`;
+    const existingIdx = state.wrongAnswers.findIndex(w => `${w.ch}:${w.qIndex}` === wrongKey);
+    if (existingIdx !== -1) state.wrongAnswers.splice(existingIdx, 1);
   } else {
     state.streak = 0;
+    // Add to wrongAnswers if not already there
+    if (!state.wrongAnswers) state.wrongAnswers = [];
+    const qIndex = QUESTIONS.indexOf(card);
+    const alreadyWrong = state.wrongAnswers.some(w => w.ch === card.ch && w.qIndex === qIndex);
+    if (!alreadyWrong) state.wrongAnswers.push({ ch: card.ch, qIndex });
   }
   saveState();
 
@@ -2034,6 +2138,22 @@ function nextCard() {
 }
 
 function finishChapter() {
+  // Review mode ends differently — just go back to hub
+  if (isReviewMode) {
+    isReviewMode = false;
+    const total = currentCards.length;
+    const correct = sessionCorrect;
+    $('modal-icon').textContent = correct >= total ? '🔁' : '💪';
+    $('modal-title').textContent = 'REVIEW DONE';
+    $('modal-subtitle').textContent = `${correct}/${total} correct in review session`;
+    $('modal-score').innerHTML = `${correct} <span class="of-total">/ ${total}</span>`;
+    const badge = $('modal-badge');
+    badge.textContent = '← BACK TO HUB';
+    badge.className = 'modal-badge retry';
+    $('modal-overlay').classList.add('show');
+    return;
+  }
+
   const total = currentCards.length;
   const correct = sessionCorrect;
   const threshold = Math.ceil(total * 0.8); // 80% correct to certify
@@ -2078,7 +2198,12 @@ $('back-btn').addEventListener('click', () => showScreen('hub-screen'));
 $('result-next').addEventListener('click', (e) => { e.stopPropagation(); nextCard(); });
 $('modal-btn').addEventListener('click', () => {
   $('modal-overlay').classList.remove('show');
-  showScreen('hub-screen');
+  // If chapter was certified, show reflection modal before hub
+  if ($('modal-title').textContent === 'CERTIFIED') {
+    showReflectionModal();
+  } else {
+    showScreen('hub-screen');
+  }
 });
 $('play-back-btn').addEventListener('click', () => showScreen('hub-screen'));
 $('session-modal-btn').addEventListener('click', () => {
@@ -2145,6 +2270,88 @@ document.addEventListener('keydown', (e) => {
       if (key in keyMap) answerQuestion(keyMap[key]);
     }
   }
+});
+
+// ═══════════ REVIEW MODE ═══════════
+let isReviewMode = false;
+
+function startReviewMode() {
+  if (!state.wrongAnswers || state.wrongAnswers.length === 0) return;
+
+  // Build review card list from wrongAnswers
+  const reviewCards = state.wrongAnswers
+    .map(w => QUESTIONS[w.qIndex])
+    .filter(Boolean);
+
+  if (reviewCards.length === 0) return;
+
+  isReviewMode = true;
+  currentChapter = { id: 0, title: 'Review Session', icon: '🔁', style: 'review', depth: 'core' };
+  currentCards = shuffle(reviewCards);
+  currentCardIndex = 0;
+  sessionCorrect = 0;
+  answered = false;
+
+  $('study-chapter-name').textContent = 'REVIEW SESSION';
+  showScreen('study-screen');
+  showCard();
+}
+
+// ═══════════ REFLECTION MODAL ═══════════
+function showReflectionModal() {
+  const ch = currentChapter;
+  $('reflection-title').textContent = `Chapter ${ch.id} Certified`;
+
+  // Pick 3 topic keywords from questions in this chapter that were most recently wrong
+  // Strategy: pull from wrongAnswers first; fill with random chapter questions if needed
+  const chapterQs = QUESTIONS.map((q, i) => ({ q, i })).filter(({ q }) => q.ch === ch.id);
+  const wrongInChapter = chapterQs.filter(({ i }) =>
+    state.wrongAnswers && state.wrongAnswers.some(w => w.qIndex === i)
+  );
+
+  // Supplement if fewer than 3 wrong in this chapter
+  let candidates = [...wrongInChapter];
+  if (candidates.length < 3) {
+    const others = chapterQs.filter(({ i }) => !candidates.some(c => c.i === i));
+    candidates = candidates.concat(shuffle(others)).slice(0, 3);
+  } else {
+    candidates = candidates.slice(0, 3);
+  }
+
+  const topicsEl = $('reflection-topics');
+  topicsEl.innerHTML = '';
+
+  candidates.forEach(({ q, i }) => {
+    // Extract a short keyword from the hook text (first ALL-CAPS word cluster)
+    const hookWords = q.hook.match(/[A-Z][A-Z\s''-]{2,}/g);
+    const label = hookWords ? hookWords[0].trim() : q.hook.split(':')[0].trim();
+
+    const btn = document.createElement('button');
+    btn.className = 'reflection-topic-btn';
+    btn.textContent = label;
+    btn.dataset.qIndex = i;
+    btn.dataset.ch = q.ch;
+
+    btn.addEventListener('click', () => {
+      if (btn.classList.contains('queued')) return;
+      // Queue for review
+      if (!state.wrongAnswers) state.wrongAnswers = [];
+      const alreadyWrong = state.wrongAnswers.some(w => w.qIndex === i);
+      if (!alreadyWrong) state.wrongAnswers.push({ ch: q.ch, qIndex: i });
+      saveState();
+      btn.classList.add('queued');
+      btn.textContent = '✓ Added to review queue';
+    });
+
+    topicsEl.appendChild(btn);
+  });
+
+  $('reflection-modal').classList.add('show');
+}
+
+$('reflection-back-btn').addEventListener('click', () => {
+  $('reflection-modal').classList.remove('show');
+  showScreen('hub-screen');
 });
 
 // ═══════════ BARBELL VISUALIZATION ═══════════
