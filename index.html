@@ -144,9 +144,9 @@ body::after {
 }
 
 .zone-separator {
-  stroke: rgba(232,220,200,0.06);
+  stroke: rgba(232,220,200,0.1);
   stroke-width: 0.5;
-  stroke-dasharray: 4 4;
+  stroke-dasharray: 6 4;
 }
 
 /* Stars */
@@ -181,6 +181,9 @@ body::after {
 .star.mastered.quality-high { fill: #d4a843; }
 .star.mastered.quality-mid { fill: #a07830; }
 .star.mastered.quality-low { fill: #606070; }
+.star.mastered.sunlight-zone { fill: #f0e0b0; filter: url(#star-glow-bright); }
+.star.mastered.sunlight-zone.quality-mid { fill: #c8a858; }
+.star.mastered.sunlight-zone.quality-low { fill: #808080; }
 
 .star.review-due {
   filter: url(#star-fog);
@@ -202,12 +205,18 @@ body::after {
 /* Star labels */
 .star-label {
   font-family: var(--font-body);
-  font-size: 8px;
+  font-size: 9px;
   fill: rgba(232,220,200,0.25);
   pointer-events: none;
 }
 .star-label.mastered {
-  fill: rgba(232,220,200,0.6);
+  fill: rgba(232,220,200,0.65);
+}
+.star-label.sunlight {
+  fill: rgba(240,224,176,0.3);
+}
+.star-label.mastered.sunlight {
+  fill: rgba(240,224,176,0.75);
 }
 
 .star-lock {
@@ -1304,9 +1313,13 @@ body::after {
     <div class="cave-ascent" id="cave-ascent">
       <svg id="constellation-svg" viewBox="0 0 400 700" preserveAspectRatio="xMidYMid meet">
         <defs>
-          <filter id="star-glow">
-            <feGaussianBlur stdDeviation="3" result="blur"/>
-            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          <filter id="star-glow" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="5" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <filter id="star-glow-bright" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="6" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="blur"/><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
           </filter>
           <filter id="star-fog">
             <feGaussianBlur stdDeviation="2"/>
@@ -2670,45 +2683,56 @@ function getTier(count) {
 }
 
 const STAR_POSITIONS = [
-  // Zone 1: SHADOWS (y: 680-540)
+  // Zone 1: SHADOWS (y: 680-540) — spread wider across 40-360
   { ch: 1, x: 200, y: 670 },
-  { ch: 2, x: 160, y: 640 },
-  { ch: 3, x: 240, y: 610 },
-  { ch: 4, x: 180, y: 580 },
-  { ch: 5, x: 260, y: 555 },
-  { ch: 6, x: 140, y: 535 },
-  // Zone 2: FIRELIGHT (y: 520-360)
-  { ch: 7, x: 220, y: 510 },
-  { ch: 8, x: 160, y: 480 },
-  { ch: 9, x: 280, y: 455 },
-  { ch: 10, x: 130, y: 430 },
-  { ch: 11, x: 250, y: 405 },
-  { ch: 12, x: 150, y: 380 },
-  { ch: 13, x: 200, y: 355 },
-  { ch: 14, x: 260, y: 335 },
+  { ch: 2, x: 110, y: 638 },
+  { ch: 3, x: 300, y: 608 },
+  { ch: 4, x: 150, y: 578 },
+  { ch: 5, x: 330, y: 555 },
+  { ch: 6, x: 70,  y: 535 },
+  // Zone 2: FIRELIGHT (y: 520-360) — use full width
+  { ch: 7, x: 280, y: 510 },
+  { ch: 8, x: 100, y: 478 },
+  { ch: 9, x: 350, y: 452 },
+  { ch: 10, x: 60,  y: 428 },
+  { ch: 11, x: 310, y: 400 },
+  { ch: 12, x: 100, y: 378 },
+  { ch: 13, x: 200, y: 352 },
+  { ch: 14, x: 320, y: 330 },
   // Zone 3: CAVE MOUTH (y: 330-180)
-  { ch: 15, x: 140, y: 310 },
-  { ch: 16, x: 270, y: 290 },
-  { ch: 17, x: 180, y: 265 },
-  { ch: 18, x: 250, y: 240 },
-  { ch: 19, x: 160, y: 215 },
-  { ch: 20, x: 230, y: 195 },
-  { ch: 21, x: 300, y: 180 },
-  // Zone 4: SUNLIGHT (y: 170-30)
-  { ch: 22, x: 170, y: 155 },
-  { ch: 23, x: 280, y: 130 },
-  { ch: 24, x: 140, y: 105 },
-  { ch: 25, x: 230, y: 75 },
-  { ch: 26, x: 200, y: 40 },
+  { ch: 15, x: 80,  y: 308 },
+  { ch: 16, x: 340, y: 288 },
+  { ch: 17, x: 170, y: 262 },
+  { ch: 18, x: 310, y: 238 },
+  { ch: 19, x: 100, y: 215 },
+  { ch: 20, x: 240, y: 192 },
+  { ch: 21, x: 360, y: 178 },
+  // Zone 4: SUNLIGHT (y: 170-30) — wide, reaching for the light
+  { ch: 22, x: 120, y: 152 },
+  { ch: 23, x: 340, y: 128 },
+  { ch: 24, x: 80,  y: 102 },
+  { ch: 25, x: 280, y: 72 },
+  { ch: 26, x: 200, y: 38 },
 ];
 
 const CONNECTIONS = [
-  [2, 3],
-  [3, 4],
-  [11, 13],
-  [12, 13],
-  [13, 14],
-  [13, 17],
+  // Prerequisite lines (mastery gates)
+  [2, 3],   // Socrates → Plato
+  [3, 4],   // Plato → Aristotle
+  [11, 13], // Rationalism → Kant
+  [12, 13], // Empiricism → Kant
+  [13, 14], // Kant → German Idealism
+  [13, 17], // Kant → Nietzsche
+  // Philosophical influence lines (non-gating)
+  [3, 6],   // Plato → Neoplatonism
+  [4, 7],   // Aristotle → Islamic Golden Age
+  [4, 8],   // Aristotle → Medieval Christian
+  [14, 15], // Hegel → Kierkegaard
+  [14, 16], // Hegel → Marx
+  [18, 19], // Phenomenology → Heidegger
+  [15, 20], // Kierkegaard → Existentialism
+  [19, 20], // Heidegger → Existentialism
+  [21, 22], // Early Analytic → Later Wittgenstein
 ];
 
 function renderConstellation(masteredCount) {
@@ -2737,8 +2761,8 @@ function renderConstellation(masteredCount) {
   // Render zone separator lines
   [525, 350, 175].forEach(y => {
     const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    line.setAttribute('x1', '30');
-    line.setAttribute('x2', '370');
+    line.setAttribute('x1', '15');
+    line.setAttribute('x2', '385');
     line.setAttribute('y1', String(y));
     line.setAttribute('y2', String(y));
     line.setAttribute('class', 'zone-separator');
@@ -2779,6 +2803,7 @@ function renderConstellation(masteredCount) {
     circle.setAttribute('cx', String(pos.x));
     circle.setAttribute('cy', String(pos.y));
 
+    const inSunlight = pos.y < 175;
     let starClass = 'star unseen';
     let radius = 4;
     if (score.mastered) {
@@ -2787,8 +2812,9 @@ function renderConstellation(masteredCount) {
       if (accuracy >= 0.9) starClass += ' quality-high';
       else if (accuracy >= 0.7) starClass += ' quality-mid';
       else starClass += ' quality-low';
+      if (inSunlight) starClass += ' sunlight-zone';
       if (hasDueCards) starClass += ' review-due';
-      radius = 7;
+      radius = inSunlight ? 8 : 7;
     } else if (score.total > 0) {
       starClass = 'star in-progress';
       radius = 5;
@@ -2799,13 +2825,15 @@ function renderConstellation(masteredCount) {
     circle.setAttribute('class', starClass);
     g.appendChild(circle);
 
-    // Chapter label
+    // Chapter label — offset further for wider layout
     const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-    const labelX = pos.x > 200 ? pos.x - 15 : pos.x + 15;
+    const labelX = pos.x > 200 ? pos.x - 18 : pos.x + 18;
     label.setAttribute('x', String(labelX));
     label.setAttribute('y', String(pos.y + 4));
     label.setAttribute('text-anchor', pos.x > 200 ? 'end' : 'start');
-    label.setAttribute('class', 'star-label' + (score.mastered ? ' mastered' : ''));
+    let labelClass = 'star-label' + (score.mastered ? ' mastered' : '');
+    if (inSunlight) labelClass += ' sunlight';
+    label.setAttribute('class', labelClass);
     const shortName = ch.title.split(/[—–:]/)[0].trim().split(' ').slice(0, 2).join(' ');
     label.textContent = shortName;
     g.appendChild(label);
