@@ -707,9 +707,90 @@ body::after {
   border-radius: 6px;
   cursor: pointer;
   transition: background 0.2s;
+  position: relative;
+  overflow: hidden;
 }
 
 .result-next:hover { background: rgba(255,255,255,0.3); }
+
+.result-next::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; bottom: 0;
+  width: 100%;
+  background: rgba(255,255,255,0.15);
+  transform-origin: left;
+  animation: none;
+}
+.result-next.auto-advancing::after {
+  animation: shrink-bar 2s linear forwards;
+}
+@keyframes shrink-bar {
+  from { transform: scaleX(1); }
+  to { transform: scaleX(0); }
+}
+
+/* ═══════════ RESUME BANNER ═══════════ */
+.resume-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  background: linear-gradient(90deg, rgba(212,168,67,0.15), rgba(212,168,67,0.05));
+  border-bottom: 1px solid var(--amber-dim);
+  font-size: 0.85rem;
+  color: var(--amber);
+}
+.resume-banner span { flex: 1; }
+.resume-go-btn {
+  background: var(--amber);
+  color: var(--bg);
+  border: none;
+  padding: 6px 16px;
+  border-radius: 4px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+.resume-go-btn:hover { opacity: 0.9; }
+.resume-dismiss-btn {
+  background: none;
+  border: none;
+  color: var(--chalk-dim);
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+.resume-dismiss-btn:hover { color: var(--chalk); }
+
+/* ═══════════ HINT BAR ═══════════ */
+.result-bar.is-hint {
+  background: linear-gradient(180deg, rgba(212,168,67,0.9), rgba(212,168,67,0.95));
+}
+
+/* ═══════════ SCORE TOAST ═══════════ */
+.score-toast {
+  position: fixed;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-20px);
+  background: var(--iron-light);
+  color: var(--chalk);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  padding: 8px 20px;
+  border-radius: 20px;
+  border: 1px solid var(--amber-dim);
+  opacity: 0;
+  transition: opacity 0.3s, transform 0.3s;
+  z-index: 300;
+  pointer-events: none;
+}
+.score-toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
 
 /* ═══════════ CHAPTER COMPLETE MODAL ═══════════ */
 .modal-overlay {
@@ -1243,6 +1324,8 @@ body::after {
     </div>
   </div>
 
+  <div class="resume-banner" id="resume-banner" style="display:none;"></div>
+
   <div class="hub-hero">
     <div class="hub-title">THE ATHENAEUM</div>
     <div class="hub-subtitle">History of Philosophy</div>
@@ -1275,7 +1358,7 @@ body::after {
 
   <div class="bottom-bar">
     <p>Tap a chapter to study · 80% correct to certify</p>
-    <p style="margin-top:4px;opacity:0.4;">v1.2</p>
+    <p style="margin-top:4px;opacity:0.4;">v1.3</p>
   </div>
 </div>
 
@@ -1362,6 +1445,8 @@ body::after {
     <button class="modal-btn" id="reflection-back-btn">Back to Hub</button>
   </div>
 </div>
+
+<div class="score-toast" id="score-toast"></div>
 
 <script>
 // ═══════════════════════════════════════════════
@@ -1748,11 +1833,13 @@ function defaultState() {
     bestStreak: 0,
     soundEnabled: false,
     wrongAnswers: [],   // array of { ch, qIndex } — spaced repetition queue
+    inProgress: null,   // { chapterId, cardIndex, sessionCorrect, cardIndices }
   };
 }
 
 function migrateState(s) {
   if (!s.wrongAnswers) s.wrongAnswers = [];
+  if (!s.inProgress) s.inProgress = null;
   return s;
 }
 
@@ -1850,12 +1937,33 @@ let currentCards = [];
 let currentCardIndex = 0;
 let sessionCorrect = 0;
 let answered = false;
+let autoAdvanceTimer = null;
+let hintUsed = false;
 
 // ═══════════ DOM REFS ═══════════
 const $ = id => document.getElementById(id);
 
 // ═══════════ HUB ═══════════
 function renderHub() {
+  // Resume banner
+  const resumeBanner = $('resume-banner');
+  if (state.inProgress) {
+    const ch = CHAPTERS.find(c => c.id === state.inProgress.chapterId);
+    if (ch) {
+      const total = QUESTIONS.filter(q => q.ch === ch.id).length;
+      resumeBanner.innerHTML = `
+        <span>${ch.icon} Continue Ch ${ch.id}: ${ch.title} (${state.inProgress.cardIndex}/${total})</span>
+        <button class="resume-go-btn" onclick="resumeStudy()">Resume \u2192</button>
+        <button class="resume-dismiss-btn" onclick="dismissResume()">\u2715</button>
+      `;
+      resumeBanner.style.display = 'flex';
+    } else {
+      resumeBanner.style.display = 'none';
+    }
+  } else {
+    resumeBanner.style.display = 'none';
+  }
+
   const grid = $('chapter-grid');
   grid.innerHTML = '';
 
@@ -1931,6 +2039,14 @@ function startStudy(chapterId) {
   sessionCorrect = 0;
   answered = false;
 
+  state.inProgress = {
+    chapterId,
+    cardIndex: 0,
+    sessionCorrect: 0,
+    cardIndices: currentCards.map(c => QUESTIONS.indexOf(c))
+  };
+  saveState();
+
   $('study-chapter-name').textContent = `Ch ${currentChapter.id}: ${currentChapter.title}`;
 
   showScreen('study-screen');
@@ -1976,9 +2092,14 @@ function showCard() {
   // Store shuffled correct index for this card
   currentCards[currentCardIndex]._shuffledCorrect = shuffledChoices.correctIndex;
 
+  // Reset per-card state
+  hintUsed = false;
+
   // Hide result bar
   const resultBar = $('result-bar');
-  resultBar.classList.remove('show', 'is-correct', 'is-wrong');
+  resultBar.classList.remove('show', 'is-correct', 'is-wrong', 'is-hint');
+  $('result-next').style.display = '';
+  $('result-next').classList.remove('auto-advancing');
 }
 
 // ═══════════ ANTI-PATTERN-MATCHING ═══════════
@@ -2072,7 +2193,7 @@ function varyQuestionText(text, isHook) {
 }
 
 function flipCard() {
-  if (!answered) {
+  if (!answered && !hintUsed) {
     $('card-3d').classList.toggle('flipped');
     playSound('flip');
   }
@@ -2080,14 +2201,31 @@ function flipCard() {
 
 function answerQuestion(choiceIndex, shuffledCorrectIndex) {
   if (answered) return;
-  answered = true;
 
   const card = currentCards[currentCardIndex];
   const correctIdx = shuffledCorrectIndex !== undefined ? shuffledCorrectIndex : card._shuffledCorrect;
   const isCorrect = choiceIndex === correctIdx;
   const buttons = $('card-choices').querySelectorAll('.choice-btn');
 
-  // Mark buttons — use shuffled correct index
+  // First wrong attempt: show hint, let user try again
+  if (!isCorrect && !hintUsed) {
+    hintUsed = true;
+    buttons[choiceIndex].classList.add('disabled', 'wrong');
+    const resultBar = $('result-bar');
+    resultBar.classList.remove('is-correct', 'is-wrong');
+    resultBar.classList.add('show', 'is-hint');
+    $('result-text').textContent = varyHookText(card.hook);
+    $('result-next').style.display = 'none';
+    playSound('wrong');
+    return;
+  }
+
+  // Resolve: either first-try correct or second attempt (after hint)
+  answered = true;
+  // Only count as correct if first try (no hint was shown)
+  const earnedCorrect = isCorrect && !hintUsed;
+
+  // Mark buttons
   buttons.forEach((btn, i) => {
     btn.classList.add('disabled');
     if (i === correctIdx) btn.classList.add('correct');
@@ -2096,19 +2234,17 @@ function answerQuestion(choiceIndex, shuffledCorrectIndex) {
 
   // Update state
   state.totalAnswered++;
-  if (isCorrect) {
+  if (earnedCorrect) {
     state.totalCorrect++;
     state.streak++;
     if (state.streak > state.bestStreak) state.bestStreak = state.streak;
     sessionCorrect++;
-    // Remove from wrongAnswers if answered correctly (in any mode)
     if (!state.wrongAnswers) state.wrongAnswers = [];
     const wrongKey = `${card.ch}:${QUESTIONS.indexOf(card)}`;
     const existingIdx = state.wrongAnswers.findIndex(w => `${w.ch}:${w.qIndex}` === wrongKey);
     if (existingIdx !== -1) state.wrongAnswers.splice(existingIdx, 1);
   } else {
     state.streak = 0;
-    // Add to wrongAnswers if not already there
     if (!state.wrongAnswers) state.wrongAnswers = [];
     const qIndex = QUESTIONS.indexOf(card);
     const alreadyWrong = state.wrongAnswers.some(w => w.ch === card.ch && w.qIndex === qIndex);
@@ -2117,15 +2253,40 @@ function answerQuestion(choiceIndex, shuffledCorrectIndex) {
   saveState();
 
   // Play sound
-  playSound(isCorrect ? 'correct' : 'wrong');
+  playSound(earnedCorrect ? 'correct' : 'wrong');
 
   // Show result bar
   const resultBar = $('result-bar');
-  resultBar.classList.add('show', isCorrect ? 'is-correct' : 'is-wrong');
-  $('result-text').textContent = isCorrect ? 'CORRECT' : 'WRONG';
+  resultBar.classList.remove('is-hint');
+  resultBar.classList.add('show', earnedCorrect ? 'is-correct' : 'is-wrong');
+  $('result-next').style.display = '';
+
+  if (isCorrect && hintUsed) {
+    $('result-text').textContent = 'GOT IT (with hint)';
+  } else {
+    $('result-text').textContent = earnedCorrect ? 'CORRECT' : 'WRONG';
+  }
+
+  // Score toast every 3rd question
+  if ((currentCardIndex + 1) % 3 === 0) {
+    showScoreToast();
+  }
+
+  // Auto-advance: start timer and animate Next button
+  $('result-next').classList.add('auto-advancing');
+  autoAdvanceTimer = setTimeout(() => nextCard(), 2000);
 }
 
 function nextCard() {
+  clearTimeout(autoAdvanceTimer);
+  autoAdvanceTimer = null;
+
+  if (state.inProgress) {
+    state.inProgress.cardIndex = currentCardIndex + 1;
+    state.inProgress.sessionCorrect = sessionCorrect;
+    saveState();
+  }
+
   currentCardIndex++;
 
   if (currentCardIndex >= currentCards.length) {
@@ -2138,6 +2299,9 @@ function nextCard() {
 }
 
 function finishChapter() {
+  state.inProgress = null;
+  saveState();
+
   // Review mode ends differently — just go back to hub
   if (isReviewMode) {
     isReviewMode = false;
@@ -2194,7 +2358,13 @@ function showScreen(screenId) {
 
 // ═══════════ EVENT LISTENERS ═══════════
 $('card-3d').addEventListener('click', flipCard);
-$('back-btn').addEventListener('click', () => showScreen('hub-screen'));
+$('back-btn').addEventListener('click', () => {
+  clearTimeout(autoAdvanceTimer);
+  autoAdvanceTimer = null;
+  state.inProgress = null;
+  saveState();
+  showScreen('hub-screen');
+});
 $('result-next').addEventListener('click', (e) => { e.stopPropagation(); nextCard(); });
 $('modal-btn').addEventListener('click', () => {
   $('modal-overlay').classList.remove('show');
@@ -2737,6 +2907,37 @@ function showSessionSummary() {
   $('session-modal').classList.add('show');
 
   if (allCorrect) playSound('certified');
+}
+
+// ═══════════ RESUME ═══════════
+function resumeStudy() {
+  const ip = state.inProgress;
+  if (!ip) return;
+  isReviewMode = false;
+  currentChapter = CHAPTERS.find(c => c.id === ip.chapterId);
+  currentCards = ip.cardIndices.map(i => QUESTIONS[i]).filter(Boolean);
+  currentCardIndex = ip.cardIndex || 0;
+  sessionCorrect = ip.sessionCorrect || 0;
+  answered = false;
+  hintUsed = false;
+
+  $('study-chapter-name').textContent = `Ch ${currentChapter.id}: ${currentChapter.title}`;
+  showScreen('study-screen');
+  showCard();
+}
+
+function dismissResume() {
+  state.inProgress = null;
+  saveState();
+  renderHub();
+}
+
+// ═══════════ SCORE TOAST ═══════════
+function showScoreToast() {
+  const toast = $('score-toast');
+  toast.textContent = `${sessionCorrect} for ${currentCardIndex + 1} so far`;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2000);
 }
 
 // ═══════════ UTILS ═══════════
