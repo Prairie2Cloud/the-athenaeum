@@ -1253,6 +1253,36 @@ body::after {
 
 .review-mode-btn:hover { border-color: var(--amber-dim); color: var(--amber); }
 
+.review-fresh {
+  font-size: 0.75rem;
+  color: var(--success);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 8px;
+  opacity: 0.7;
+}
+
+.chapter-card.locked {
+  opacity: 0.4;
+  pointer-events: auto;
+  position: relative;
+}
+.chapter-card.locked::after {
+  content: '🔒';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2rem;
+  filter: grayscale(1);
+}
+.chapter-lock-reason {
+  font-size: 0.65rem;
+  color: var(--chalk-dim);
+  margin-top: 4px;
+  letter-spacing: 0.5px;
+}
+
 /* ═══════════ REFLECTION MODAL ═══════════ */
 .reflection-topic-btn {
   width: 100%;
@@ -1293,7 +1323,7 @@ body::after {
 <div id="hub-screen" class="screen active">
   <div class="top-bar">
     <div style="display:flex;align-items:center;gap:10px;">
-      <div class="gym-name">The Athenaeum <span style="font-size:0.55em;opacity:0.5;letter-spacing:1px;vertical-align:middle;">v1.4</span></div>
+      <div class="gym-name">The Athenaeum <span style="font-size:0.55em;opacity:0.5;letter-spacing:1px;vertical-align:middle;">v1.5</span></div>
       <div class="top-bar-actions">
         <button class="icon-btn" id="sound-toggle-btn" title="Toggle sound">🔇</button>
         <div class="settings-wrapper">
@@ -1358,7 +1388,7 @@ body::after {
 
   <div class="bottom-bar">
     <p>Tap a chapter to study · 80% correct to certify</p>
-    <p style="margin-top:4px;opacity:0.4;">v1.4</p>
+    <p style="margin-top:4px;opacity:0.4;">v1.5</p>
   </div>
 </div>
 
@@ -1456,8 +1486,8 @@ body::after {
 const CHAPTERS = [
   { id: 1, title: "Pre-Socratics", icon: "🌊", style: "ancient", depth: "intro" },
   { id: 2, title: "Socrates & the Examined Life", icon: "🏛️", style: "dialogue", depth: "intro" },
-  { id: 3, title: "Plato — Forms & the Republic", icon: "☀️", style: "idealist", depth: "deep_dive" },
-  { id: 4, title: "Aristotle — Substance & Virtue", icon: "🔬", style: "naturalist", depth: "deep_dive" },
+  { id: 3, title: "Plato — Forms & the Republic", icon: "☀️", style: "idealist", depth: "deep_dive", requires: [2] },
+  { id: 4, title: "Aristotle — Substance & Virtue", icon: "🔬", style: "naturalist", depth: "deep_dive", requires: [3] },
   { id: 5, title: "Hellenistic Schools", icon: "🏺", style: "ancient", depth: "intro" },
   { id: 6, title: "Neoplatonism", icon: "✨", style: "mystical", depth: "intro" },
   { id: 7, title: "Islamic Golden Age", icon: "🌙", style: "illuminated", depth: "core" },
@@ -1466,11 +1496,11 @@ const CHAPTERS = [
   { id: 10, title: "Renaissance Philosophy", icon: "🎭", style: "renaissance", depth: "intro" },
   { id: 11, title: "Rationalism", icon: "🔺", style: "geometric", depth: "core" },
   { id: 12, title: "Empiricism", icon: "👁️", style: "empirical", depth: "core" },
-  { id: 13, title: "Kant — Critical Philosophy", icon: "⚖️", style: "enlightenment", depth: "deep_dive" },
-  { id: 14, title: "German Idealism", icon: "🌀", style: "romantic", depth: "deep_dive" },
+  { id: 13, title: "Kant — Critical Philosophy", icon: "⚖️", style: "enlightenment", depth: "deep_dive", requires: [11, 12] },
+  { id: 14, title: "German Idealism", icon: "🌀", style: "romantic", depth: "deep_dive", requires: [13] },
   { id: 15, title: "Kierkegaard & Proto-Existentialism", icon: "😰", style: "romantic", depth: "core" },
   { id: 16, title: "Marx & Historical Materialism", icon: "⚒️", style: "industrial", depth: "core" },
-  { id: 17, title: "Nietzsche", icon: "🦅", style: "dramatic", depth: "deep_dive" },
+  { id: 17, title: "Nietzsche", icon: "🦅", style: "dramatic", depth: "deep_dive", requires: [13] },
   { id: 18, title: "Phenomenology", icon: "🎯", style: "modernist", depth: "core" },
   { id: 19, title: "Heidegger", icon: "🪵", style: "modernist", depth: "core" },
   { id: 20, title: "Existentialism", icon: "🚪", style: "noir", depth: "core" },
@@ -1481,6 +1511,27 @@ const CHAPTERS = [
   { id: 25, title: "Contemporary Ethics & Political Philosophy", icon: "🗳️", style: "contemporary", depth: "core" },
   { id: 26, title: "Essential Greek & Latin Terminology", icon: "📜", style: "ancient", depth: "deep_dive" },
 ];
+
+function isChapterLocked(ch) {
+  if (!ch.requires) return false;
+  return ch.requires.some(reqId => {
+    const score = state.chapterScores[reqId];
+    return !score || !score.mastered;
+  });
+}
+
+function getLockedReason(ch) {
+  if (!ch.requires) return '';
+  const missing = ch.requires
+    .filter(reqId => {
+      const score = state.chapterScores[reqId];
+      return !score || !score.mastered;
+    })
+    .map(reqId => CHAPTERS.find(c => c.id === reqId))
+    .filter(Boolean);
+  if (missing.length === 0) return '';
+  return 'Certify ' + missing.map(c => `Ch ${c.id}`).join(' & ') + ' first';
+}
 
 const QUESTIONS = [
   // Ch.1: Pre-Socratics
@@ -1820,6 +1871,75 @@ const CHAPTER_CONSEQUENCES = {
 };
 const DEFAULT_CONSEQUENCE = "A philosophical subtlety was overlooked in your reasoning.";
 
+// ═══════════ FSRS-5 SPACED REPETITION ═══════════
+const FSRS_DECAY = -0.5;
+const FSRS_FACTOR = 19 / 81;
+const FSRS_W = [0.4072, 1.1829, 3.1262, 15.4722, 7.2102, 0.5316, 1.0651, 0.0046, 1.5418, 0.1466, 1.0010, 2.1395, 0.0512, 0.3878, 0.6268, 0.2006, 2.8424, 0.0, 0.0];
+const FSRS_MAX_INTERVAL = 365;
+const FSRS_DESIRED_RETENTION = 0.9;
+
+function fsrsRetrievability(elapsedDays, S) {
+  if (!S || S <= 0) return 0;
+  return Math.pow(1 + FSRS_FACTOR * elapsedDays / S, FSRS_DECAY);
+}
+
+function fsrsInitStability(rating) { return FSRS_W[rating - 1]; }
+
+function fsrsInitDifficulty(rating) {
+  return Math.min(10, Math.max(1, FSRS_W[4] - Math.exp(FSRS_W[5] * (rating - 1)) + 1));
+}
+
+function fsrsNextDifficulty(D, rating) {
+  const delta = -FSRS_W[6] * (rating - 3);
+  const linear = D + delta * ((10 - D) / 9);
+  return Math.min(10, Math.max(1, FSRS_W[7] * fsrsInitDifficulty(4) + (1 - FSRS_W[7]) * linear));
+}
+
+function fsrsRecallStability(D, S, R, rating) {
+  const hard = rating === 2 ? FSRS_W[15] : 1;
+  const easy = rating === 4 ? FSRS_W[16] : 1;
+  return S * (Math.exp(FSRS_W[8]) * (11 - D) * Math.pow(S, -FSRS_W[9]) * (Math.exp(FSRS_W[10] * (1 - R)) - 1) * hard * easy + 1);
+}
+
+function fsrsLapseStability(D, S, R) {
+  const sf = FSRS_W[11] * Math.pow(D, -FSRS_W[12]) * (Math.pow(S + 1, FSRS_W[13]) - 1) * Math.exp(FSRS_W[14] * (1 - R));
+  return Math.min(sf, S);
+}
+
+function fsrsInterval(S) {
+  const days = (S / FSRS_FACTOR) * (Math.pow(FSRS_DESIRED_RETENTION, 1 / FSRS_DECAY) - 1);
+  return Math.max(1, Math.min(FSRS_MAX_INTERVAL, Math.round(days)));
+}
+
+// Rating mapping: Wrong=1(Again), HintAssisted=2(Hard), Correct=3(Good)
+function fsrsReview(card, rating) {
+  const now = Date.now();
+  if (!card.lastReview) {
+    card.D = fsrsInitDifficulty(rating);
+    card.S = fsrsInitStability(rating);
+  } else {
+    const elapsed = (now - card.lastReview) / 86400000;
+    const R = fsrsRetrievability(elapsed, card.S);
+    card.D = fsrsNextDifficulty(card.D, rating);
+    card.S = rating === 1
+      ? fsrsLapseStability(card.D, card.S, R)
+      : fsrsRecallStability(card.D, card.S, R, rating);
+  }
+  card.lastReview = now;
+  card.interval = fsrsInterval(card.S);
+  card.nextReview = now + card.interval * 86400000;
+  card.reps = (card.reps || 0) + 1;
+  return card;
+}
+
+function getDueCards(fsrsCards, now) {
+  if (!now) now = Date.now();
+  return Object.entries(fsrsCards)
+    .filter(([_, c]) => c.nextReview && c.nextReview <= now)
+    .sort((a, b) => a[1].nextReview - b[1].nextReview)
+    .map(([idx, c]) => ({ qIndex: parseInt(idx), ...c }));
+}
+
 // ═══════════ GAME STATE ═══════════
 const SAVE_KEY = 'the-athenaeum-v1';
 let state = loadState();
@@ -1833,13 +1953,26 @@ function defaultState() {
     bestStreak: 0,
     soundEnabled: false,
     wrongAnswers: [],   // array of { ch, qIndex } — spaced repetition queue
+    fsrsCards: {},      // { qIndex: { D, S, lastReview, nextReview, reps, interval } }
     inProgress: null,   // { chapterId, cardIndex, sessionCorrect, cardIndices }
   };
 }
 
 function migrateState(s) {
   if (!s.wrongAnswers) s.wrongAnswers = [];
+  if (!s.fsrsCards) s.fsrsCards = {};
   if (!s.inProgress) s.inProgress = null;
+  // Migrate old wrongAnswers to FSRS cards (one-time)
+  if (s.wrongAnswers && s.wrongAnswers.length > 0 && Object.keys(s.fsrsCards).length === 0) {
+    s.wrongAnswers.forEach(w => {
+      if (!s.fsrsCards[w.qIndex]) {
+        s.fsrsCards[w.qIndex] = {
+          D: 5, S: 0.5, lastReview: Date.now() - 86400000,
+          nextReview: Date.now(), reps: 1, interval: 1
+        };
+      }
+    });
+  }
   return s;
 }
 
@@ -1973,9 +2106,15 @@ function renderHub() {
     const score = state.chapterScores[ch.id] || { correct: 0, total: 0, mastered: false };
     if (score.mastered) masteredCount++;
 
+    const locked = isChapterLocked(ch);
     const card = document.createElement('div');
-    card.className = 'chapter-card' + (score.mastered ? ' mastered' : '');
-    card.onclick = () => startStudy(ch.id);
+    card.className = 'chapter-card' + (score.mastered ? ' mastered' : '') + (locked ? ' locked' : '');
+    if (locked) {
+      const reason = getLockedReason(ch);
+      card.onclick = () => alert(reason);
+    } else {
+      card.onclick = () => startStudy(ch.id);
+    }
 
     // Mastery dots
     const questions = QUESTIONS.filter(q => q.ch === ch.id);
@@ -1992,11 +2131,14 @@ function renderHub() {
       depthBadgeHtml = '<div class="depth-badge foundations">Foundations</div>';
     }
 
+    const lockReasonHtml = locked ? `<div class="chapter-lock-reason">${getLockedReason(ch)}</div>` : '';
+
     card.innerHTML = `
       <div class="chapter-icon">${ch.icon}</div>
       <div class="chapter-num">CH ${String(ch.id).padStart(2,'0')}</div>
       <div class="chapter-title">${ch.title}</div>
       ${depthBadgeHtml}
+      ${lockReasonHtml}
       ${dotsHtml}
     `;
     grid.appendChild(card);
@@ -2019,9 +2161,21 @@ function renderHub() {
     playHtml += `<div class="play-mode-locked">Certify ${needed} more chapter${needed !== 1 ? 's' : ''} to unlock Philosophical Dialogues</div>`;
   }
 
-  // Review button — appears once 10+ total questions answered and there are wrong answers
-  if (state.totalAnswered >= 10 && state.wrongAnswers && state.wrongAnswers.length > 0) {
-    playHtml += `<br><button class="review-mode-btn" onclick="startReviewMode()">🔁 REVIEW (${state.wrongAnswers.length})</button>`;
+  // FSRS review button — show due count
+  const dueCount = getDueCards(state.fsrsCards).length;
+  if (dueCount > 0) {
+    playHtml += `<br><button class="review-mode-btn" onclick="startReviewMode()">🔁 REVIEW (${dueCount} due)</button>`;
+  } else if (Object.keys(state.fsrsCards).length > 0) {
+    // Has studied cards but nothing due
+    const upcoming = Object.values(state.fsrsCards).filter(c => c.nextReview);
+    if (upcoming.length > 0) {
+      const nextDue = Math.min(...upcoming.map(c => c.nextReview));
+      const hoursUntil = Math.max(1, Math.round((nextDue - Date.now()) / 3600000));
+      const timeStr = hoursUntil >= 24
+        ? Math.round(hoursUntil / 24) + 'd'
+        : hoursUntil + 'h';
+      playHtml += `<br><div class="review-fresh">&#10003; Nothing due &middot; next in ~${timeStr}</div>`;
+    }
   }
   playWrapper.innerHTML = playHtml;
 
@@ -2032,6 +2186,11 @@ function renderHub() {
 
 // ═══════════ STUDY MODE ═══════════
 function startStudy(chapterId) {
+  const ch = CHAPTERS.find(c => c.id === chapterId);
+  if (ch && isChapterLocked(ch)) {
+    alert(getLockedReason(ch));
+    return;
+  }
   isReviewMode = false;
   currentChapter = CHAPTERS.find(c => c.id === chapterId);
   currentCards = shuffle(QUESTIONS.filter(q => q.ch === chapterId));
@@ -2252,6 +2411,13 @@ function answerQuestion(choiceIndex, shuffledCorrectIndex) {
   }
   saveState();
 
+  // Record FSRS review
+  const qIdx = QUESTIONS.indexOf(card);
+  if (!state.fsrsCards[qIdx]) state.fsrsCards[qIdx] = {};
+  const fsrsRating = earnedCorrect ? 3 : (isCorrect && hintUsed ? 2 : 1);
+  fsrsReview(state.fsrsCards[qIdx], fsrsRating);
+  saveState();
+
   // Play sound
   playSound(earnedCorrect ? 'correct' : 'wrong');
 
@@ -2446,23 +2612,38 @@ document.addEventListener('keydown', (e) => {
 let isReviewMode = false;
 
 function startReviewMode() {
-  if (!state.wrongAnswers || state.wrongAnswers.length === 0) return;
+  const now = Date.now();
+  const due = getDueCards(state.fsrsCards, now);
 
-  // Build review card list from wrongAnswers
-  const reviewCards = state.wrongAnswers
-    .map(w => QUESTIONS[w.qIndex])
-    .filter(Boolean);
+  if (due.length === 0) {
+    // Find next review time
+    const upcoming = Object.values(state.fsrsCards).filter(c => c.nextReview);
+    if (upcoming.length === 0) {
+      alert('No reviews scheduled yet. Study some chapters first!');
+      return;
+    }
+    const nextDue = Math.min(...upcoming.map(c => c.nextReview));
+    const hoursUntil = Math.max(1, Math.round((nextDue - now) / 3600000));
+    const timeStr = hoursUntil >= 24
+      ? Math.round(hoursUntil / 24) + ' day' + (Math.round(hoursUntil / 24) !== 1 ? 's' : '')
+      : hoursUntil + ' hour' + (hoursUntil !== 1 ? 's' : '');
+    alert(`Nothing due — you're fresh! Next review in ~${timeStr}.`);
+    return;
+  }
 
-  if (reviewCards.length === 0) return;
+  // Cap at 20 cards per session
+  const sessionCards = due.slice(0, 20).map(d => QUESTIONS[d.qIndex]).filter(Boolean);
+  if (sessionCards.length === 0) return;
 
   isReviewMode = true;
   currentChapter = { id: 0, title: 'Review Session', icon: '🔁', style: 'review', depth: 'core' };
-  currentCards = shuffle(reviewCards);
+  currentCards = shuffle(sessionCards);
   currentCardIndex = 0;
   sessionCorrect = 0;
   answered = false;
+  hintUsed = false;
 
-  $('study-chapter-name').textContent = 'REVIEW SESSION';
+  $('study-chapter-name').textContent = `REVIEW · ${sessionCards.length} due`;
   showScreen('study-screen');
   showCard();
 }
