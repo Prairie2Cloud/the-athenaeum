@@ -1314,12 +1314,13 @@ body::after {
       <svg id="constellation-svg" viewBox="0 0 400 700" preserveAspectRatio="xMidYMid meet">
         <defs>
           <filter id="star-glow" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur stdDeviation="5" result="blur"/>
-            <feMerge><feMergeNode in="blur"/><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            <feGaussianBlur stdDeviation="4" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
           </filter>
           <filter id="star-glow-bright" x="-50%" y="-50%" width="200%" height="200%">
-            <feGaussianBlur stdDeviation="6" result="blur"/>
-            <feMerge><feMergeNode in="blur"/><feMergeNode in="blur"/><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            <feGaussianBlur stdDeviation="4" result="blur"/>
+            <feComponentTransfer in="blur" result="bright"><feFuncA type="linear" slope="2"/></feComponentTransfer>
+            <feMerge><feMergeNode in="bright"/><feMergeNode in="SourceGraphic"/></feMerge>
           </filter>
           <filter id="star-fog">
             <feGaussianBlur stdDeviation="2"/>
