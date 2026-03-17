@@ -861,11 +861,34 @@ body::after {
   text-transform: uppercase;
   margin-top: 2px;
 }
-.viva-desc {
-  font-size: 0.8rem;
+.viva-steps {
+  margin: 16px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: left;
+  max-width: 340px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.viva-step {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.82rem;
   color: var(--chalk-dim);
-  line-height: 1.6;
-  margin: 14px 0;
+}
+.viva-step em { color: var(--amber); font-style: normal; }
+.viva-step-num {
+  flex-shrink: 0;
+  width: 22px; height: 22px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%;
+  border: 1px solid var(--amber-dim);
+  color: var(--amber);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
 }
 .viva-buttons {
   display: flex;
@@ -1413,13 +1436,18 @@ body::after {
 
   <div class="viva-voce-section">
     <div class="viva-header">VIVA VOCE</div>
-    <div class="viva-subtitle">Voice oral exam — use with any AI chatbot</div>
-    <p class="viva-desc">Drop these two files into Claude, ChatGPT, or Gemini voice mode for a live philosophical examination. The AI becomes your Oxford don examiner with 238 questions, 8 interaction modes, and the Anti-Tell pedagogical method.</p>
-    <div class="viva-buttons">
-      <a class="viva-download-btn" href="https://raw.githubusercontent.com/Prairie2Cloud/the-athenaeum/master/examiner-instructions.md" download="viva-voce-instructions.md">Instructions</a>
-      <a class="viva-download-btn" href="https://raw.githubusercontent.com/Prairie2Cloud/the-athenaeum/master/examiner-bank.md" download="viva-voce-bank.md">Question Bank</a>
+    <div class="viva-subtitle">Live oral exam with any AI voice chatbot</div>
+    <div class="viva-steps">
+      <div class="viva-step"><span class="viva-step-num">1</span> Download both files below</div>
+      <div class="viva-step"><span class="viva-step-num">2</span> Open Claude, ChatGPT, or Gemini</div>
+      <div class="viva-step"><span class="viva-step-num">3</span> Drop both files into the chat</div>
+      <div class="viva-step"><span class="viva-step-num">4</span> Say <em>"Quiz me on Kant"</em> or <em>"Debate free will"</em></div>
     </div>
-    <p class="viva-howto">Download both files, then drag them into your AI chatbot's conversation. Say "Quiz me on Kant" or "Debate free will" to begin.</p>
+    <div class="viva-buttons">
+      <button class="viva-download-btn" onclick="downloadVivaFile('instructions')">Instructions (.md)</button>
+      <button class="viva-download-btn" onclick="downloadVivaFile('bank')">Question Bank (.md)</button>
+    </div>
+    <p class="viva-howto">The AI becomes an Oxford don examiner — 238 questions, 8 modes (quiz, oral exam, debate, exegesis), voice-optimized.</p>
   </div>
 
   <div class="bottom-bar">
@@ -3250,6 +3278,47 @@ function shuffle(arr) {
     [a[i], a[j]] = [a[j], a[i]];
   }
   return a;
+}
+
+// ═══════════ VIVA VOCE DOWNLOAD ═══════════
+const VIVA_URLS = {
+  instructions: 'https://raw.githubusercontent.com/Prairie2Cloud/the-athenaeum/master/examiner-instructions.md',
+  bank: 'https://raw.githubusercontent.com/Prairie2Cloud/the-athenaeum/master/examiner-bank.md'
+};
+const VIVA_NAMES = {
+  instructions: 'viva-voce-instructions.md',
+  bank: 'viva-voce-question-bank.md'
+};
+
+function downloadVivaFile(type) {
+  const btn = event.target;
+  const origText = btn.textContent;
+  btn.textContent = 'Downloading...';
+  btn.disabled = true;
+
+  fetch(VIVA_URLS[type])
+    .then(r => {
+      if (!r.ok) throw new Error('Failed to fetch');
+      return r.text();
+    })
+    .then(text => {
+      const blob = new Blob([text], { type: 'text/markdown' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = VIVA_NAMES[type];
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      btn.textContent = 'Downloaded';
+      setTimeout(() => { btn.textContent = origText; btn.disabled = false; }, 2000);
+    })
+    .catch(() => {
+      btn.textContent = origText;
+      btn.disabled = false;
+      alert('Download failed — check your connection and try again.');
+    });
 }
 
 // ═══════════ INIT ═══════════
