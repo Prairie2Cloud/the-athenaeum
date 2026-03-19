@@ -850,6 +850,25 @@ body::after {
   background: linear-gradient(180deg, rgba(20,24,40,0.6), rgba(10,13,26,0.8));
   text-align: center;
 }
+.viva-hero {
+  margin: -24px -24px 16px -24px;
+  overflow: hidden;
+  border-radius: 12px 12px 0 0;
+}
+.viva-hero-img {
+  width: 100%;
+  max-height: 360px;
+  object-fit: cover;
+  object-position: center 20%;
+  display: block;
+  opacity: 0.85;
+  filter: sepia(0.3) contrast(1.1);
+  transition: opacity 0.3s;
+}
+.viva-hero-img:hover {
+  opacity: 1;
+  filter: sepia(0) contrast(1);
+}
 .viva-header {
   font-family: var(--font-display);
   font-size: 1.3rem;
@@ -1494,6 +1513,9 @@ body::after {
   <div class="chapter-grid" id="chapter-grid"></div>
 
   <div class="viva-voce-section">
+    <div class="viva-hero">
+      <img src="bridges-hero.jpg" alt="Die Brücken von Königsberg — seven bridges in Euler's city" class="viva-hero-img" />
+    </div>
     <div class="viva-header">The Bridges of K&ouml;nigsberg</div>
     <div class="viva-subtitle">Walking with Philosophy — voice exam for any AI chatbot</div>
     <div class="viva-chatgpt-launch">
