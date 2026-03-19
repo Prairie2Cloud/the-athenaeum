@@ -917,6 +917,54 @@ body::after {
   background: rgba(212,168,67,0.1);
   border-color: var(--amber);
 }
+.viva-chatgpt-launch {
+  margin: 18px 0 8px;
+}
+.viva-launch-btn {
+  display: inline-block;
+  padding: 14px 36px;
+  background: linear-gradient(135deg, #10a37f, #0d8c6d);
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 700;
+  text-decoration: none;
+  letter-spacing: 1px;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.viva-launch-btn:hover {
+  background: linear-gradient(135deg, #12b88a, #10a37f);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(16,163,127,0.3);
+}
+.viva-launch-note {
+  font-size: 0.72rem;
+  color: var(--iron-light);
+  margin-top: 8px;
+  font-style: italic;
+}
+.viva-divider {
+  display: flex;
+  align-items: center;
+  margin: 18px 0 12px;
+  gap: 12px;
+}
+.viva-divider::before, .viva-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--iron);
+}
+.viva-divider span {
+  font-size: 0.7rem;
+  color: var(--iron-light);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  white-space: nowrap;
+}
 .viva-howto {
   font-size: 0.72rem;
   color: var(--iron-light);
@@ -1448,6 +1496,11 @@ body::after {
   <div class="viva-voce-section">
     <div class="viva-header">The Bridges of K&ouml;nigsberg</div>
     <div class="viva-subtitle">Walking with Philosophy — voice exam for any AI chatbot</div>
+    <div class="viva-chatgpt-launch">
+      <a href="https://chatgpt.com/g/g-69bb6f4eb91c8191971b7ef951696379-the-bridges-of-koenigsberg" target="_blank" rel="noopener" class="viva-launch-btn">Start with ChatGPT &rarr;</a>
+      <p class="viva-launch-note">Opens the examiner with all 238 questions pre-loaded. Works with voice. Free account OK.</p>
+    </div>
+    <div class="viva-divider"><span>or load manually into any AI</span></div>
     <div class="viva-steps">
       <div class="viva-step"><span class="viva-step-num">1</span> Download both files below</div>
       <div class="viva-step"><span class="viva-step-num">2</span> Open Claude, ChatGPT, or Gemini</div>

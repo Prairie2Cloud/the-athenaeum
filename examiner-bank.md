@@ -1,4 +1,4 @@
-# The Athenaeum — Question Bank (v1.4)
+# The Athenaeum — Question Bank (v1.8)
 
 **This file is the companion to examiner-instructions.md.** It contains 238 curated questions across 26 chapters of PhD-level History of Philosophy. The instructions file tells the AI how to use these questions.
 
@@ -1784,6 +1784,6 @@ To ensure the student is learning concepts, not memorizing patterns:
 
 ---
 
-*The Athenaeum Question Bank v1.4 — 238 questions, 26 chapters. Companion: examiner-instructions.md*
+*The Athenaeum Question Bank v1.8 — 238 questions, 26 chapters. Companion: examiner-instructions.md*
 *Companion to [The Athenaeum Study Game](https://the-athenaeum.netlify.app)*
 *Source: [GitHub](https://github.com/Prairie2Cloud/the-athenaeum)*
