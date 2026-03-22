@@ -34,7 +34,7 @@ function validatePayload(payload) {
   return true;
 }
 
-export default async (req) => {
+export default async (req, context) => {
   const store = getStore("akropolis-wall");
 
   if (req.method === "GET") {
@@ -111,6 +111,4 @@ export default async (req) => {
   return new Response("Method not allowed", { status: 405 });
 };
 
-export const config = {
-  path: "/api/wall"
-};
+// Path rewrite handled by _redirects: /api/wall -> /.netlify/functions/wall
