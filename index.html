@@ -1427,6 +1427,328 @@ body::after {
   .card-stage { padding: 12px; }
   .hub-hero { padding: 24px 12px 16px; }
 }
+
+/* ═══════════ SAGE ASCENSION ═══════════ */
+.sage-modal-content {
+  background: #0a0c14;
+  border: 1px solid #2a2418;
+  position: relative;
+  overflow: hidden;
+  padding: 60px 40px;
+}
+
+.sage-light {
+  position: absolute;
+  top: -60px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(212,168,67,0.15) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: sageLightGrow 6s ease-out forwards;
+}
+
+@keyframes sageLightGrow {
+  from { width: 40px; height: 40px; opacity: 0; }
+  to { width: 400px; height: 400px; opacity: 1; }
+}
+
+.sage-line {
+  opacity: 0;
+  animation: sageLineReveal 1.2s ease-out forwards;
+  font-family: var(--font-display);
+  color: var(--chalk-dim);
+  font-size: 1rem;
+  letter-spacing: 2px;
+  margin-bottom: 12px;
+  line-height: 1.6;
+}
+
+@keyframes sageLineReveal {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.sage-title {
+  font-size: clamp(2.5rem, 8vw, 3.5rem);
+  letter-spacing: 12px;
+  color: var(--amber);
+  margin: 24px 0;
+  text-shadow: 0 0 30px rgba(212,168,67,0.3);
+}
+
+.sage-enter-btn {
+  background: none;
+  border: 1px solid var(--amber-dim);
+  color: var(--amber);
+  padding: 12px 36px;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  letter-spacing: 3px;
+  cursor: pointer;
+  border-radius: 4px;
+  margin-top: 16px;
+  transition: all 0.3s ease;
+}
+
+.sage-enter-btn:hover {
+  background: rgba(212,168,67,0.1);
+  border-color: var(--amber);
+  text-shadow: 0 0 10px rgba(212,168,67,0.3);
+}
+
+/* ═══════════ AKROPOLIS WALL ═══════════ */
+.wall-screen {
+  align-items: center;
+  padding: 40px 20px;
+}
+
+.wall-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.wall-title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 6vw, 3rem);
+  letter-spacing: 8px;
+  color: var(--chalk);
+  text-transform: uppercase;
+}
+
+.wall-subtitle {
+  font-size: 0.8rem;
+  color: var(--chalk-dim);
+  letter-spacing: 3px;
+  margin-top: 8px;
+}
+
+.wall-hr {
+  width: 120px;
+  border: none;
+  border-top: 1px solid var(--amber-dim);
+  margin: 0 auto 32px;
+}
+
+/* The wall itself — a stone structure with mortar */
+.wall-names {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  max-width: 720px;
+  width: 100%;
+  padding: 20px;
+  background:
+    radial-gradient(ellipse at 30% 20%, rgba(40,35,28,0.8) 0%, transparent 60%),
+    radial-gradient(ellipse at 70% 80%, rgba(40,35,28,0.6) 0%, transparent 50%),
+    linear-gradient(to bottom, #1a1610 0%, #2a2318 40%, #1e1a14 100%);
+  border: 2px solid #3a3228;
+  border-radius: 4px;
+  box-shadow:
+    inset 0 2px 8px rgba(0,0,0,0.5),
+    0 4px 20px rgba(0,0,0,0.4);
+  min-height: 120px;
+  position: relative;
+}
+
+/* Top cornice — architectural detail */
+.wall-names::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: -2px;
+  right: -2px;
+  height: 8px;
+  background: linear-gradient(to bottom, #4a4238, #3a3228);
+  border-radius: 3px 3px 0 0;
+  box-shadow: 0 -2px 4px rgba(0,0,0,0.3);
+}
+
+/* Base plinth */
+.wall-names::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: -4px;
+  right: -4px;
+  height: 10px;
+  background: linear-gradient(to top, #2a2318, #3a3228);
+  border-radius: 0 0 4px 4px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.4);
+}
+
+.wall-entry {
+  text-align: center;
+  background: url('akropolis-block.jpg') center/cover no-repeat;
+  padding: 18px 28px;
+  min-width: 200px;
+  max-width: 320px;
+  flex: 1 1 200px;
+  position: relative;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.08),
+    inset 0 -1px 0 rgba(0,0,0,0.2),
+    0 1px 3px rgba(0,0,0,0.5);
+}
+
+.wall-name {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  letter-spacing: 4px;
+  color: #2a2218;
+  text-transform: uppercase;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.25);
+}
+
+.wall-date {
+  font-size: 0.6rem;
+  color: #5a4e3e;
+  letter-spacing: 2px;
+  margin-top: 2px;
+}
+
+.wall-empty {
+  color: var(--chalk-dim);
+  font-style: italic;
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  width: 100%;
+  text-align: center;
+  padding: 20px 0;
+}
+
+.wall-back-btn {
+  margin-top: 32px;
+  background: none;
+  border: 1px solid var(--iron-light);
+  color: var(--chalk-dim);
+  padding: 8px 24px;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  letter-spacing: 2px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.wall-back-btn:hover {
+  border-color: var(--amber-dim);
+  color: var(--chalk);
+}
+
+/* Inscription prompt (shown inside wall screen after perfect completion) */
+.wall-inscribe {
+  text-align: center;
+  margin-bottom: 32px;
+  padding: 24px;
+  border: 1px solid var(--iron);
+  border-radius: 8px;
+  max-width: 360px;
+  width: 100%;
+}
+
+.wall-inscribe-prompt {
+  font-size: 0.85rem;
+  color: var(--chalk-dim);
+  letter-spacing: 2px;
+  margin-bottom: 16px;
+}
+
+.wall-inscribe-input {
+  background: var(--surface);
+  border: 1px solid var(--iron-light);
+  color: var(--chalk);
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  text-align: center;
+  padding: 10px 16px;
+  width: 100%;
+  max-width: 240px;
+  border-radius: 4px;
+  outline: none;
+}
+
+.wall-inscribe-input:focus {
+  border-color: var(--amber-dim);
+}
+
+.wall-inscribe-btn {
+  display: block;
+  margin: 12px auto 0;
+  background: none;
+  border: 1px solid var(--amber-dim);
+  color: var(--amber);
+  padding: 8px 32px;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  letter-spacing: 3px;
+  cursor: pointer;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.wall-inscribe-btn:hover {
+  background: rgba(212,168,67,0.1);
+}
+
+.wall-inscribe-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.wall-inscribe-error {
+  color: var(--danger);
+  font-size: 0.75rem;
+  margin-top: 8px;
+}
+
+.wall-inscribe-success {
+  color: var(--success);
+  font-size: 0.85rem;
+  letter-spacing: 2px;
+  margin-top: 8px;
+}
+
+.wall-continue {
+  text-align: center;
+  margin-top: 24px;
+}
+
+.wall-continue-text {
+  font-size: 0.8rem;
+  color: var(--chalk-dim);
+  font-style: italic;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+}
+
+.wall-bridges-link {
+  color: var(--amber-dim);
+  text-decoration: none;
+  font-size: 0.8rem;
+  letter-spacing: 2px;
+}
+
+.wall-bridges-link:hover {
+  color: var(--amber);
+}
+
+.hub-wall-link {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 0.75rem;
+  color: var(--chalk-dim);
+  letter-spacing: 2px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.hub-wall-link:hover {
+  color: var(--amber-dim);
+}
 </style>
 </head>
 <body>
@@ -1435,7 +1757,7 @@ body::after {
 <div id="hub-screen" class="screen active">
   <div class="top-bar">
     <div style="display:flex;align-items:center;gap:10px;">
-      <div class="gym-name">The Athenaeum <span style="font-size:0.55em;opacity:0.75;letter-spacing:1px;vertical-align:middle;background:rgba(212,168,67,0.15);padding:2px 6px;border-radius:4px;">v1.8</span></div>
+      <div class="gym-name">The Athenaeum <span style="font-size:0.55em;opacity:0.75;letter-spacing:1px;vertical-align:middle;background:rgba(212,168,67,0.15);padding:2px 6px;border-radius:4px;">v1.9</span></div>
       <div class="top-bar-actions">
         <button class="icon-btn" id="sound-toggle-btn" title="Toggle sound">🔇</button>
         <div class="settings-wrapper">
@@ -1538,7 +1860,8 @@ body::after {
 
   <div class="bottom-bar">
     <p>Tap a chapter to study · 80% correct to certify</p>
-    <p style="margin-top:4px;opacity:0.4;">v1.8</p>
+    <a class="hub-wall-link" id="hub-wall-link" onclick="showWallScreen(false)">Akropolis</a>
+    <p style="margin-top:4px;opacity:0.4;">v1.9</p>
     <p style="margin-top:6px;opacity:0.35;font-size:0.7rem;"><a href="mailto:prairie2cloud@gmail.com?subject=Athenaeum Feedback" style="color:var(--amber-dim);text-decoration:none;">Comments, bugs & enhancements → prairie2cloud@gmail.com</a></p>
   </div>
 </div>
@@ -1616,6 +1939,19 @@ body::after {
   </div>
 </div>
 
+<!-- ═══════════ SAGE ASCENSION MODAL ═══════════ -->
+<div class="modal-overlay" id="sage-modal">
+  <div class="modal-content sage-modal-content" style="max-width:480px;">
+    <div class="sage-light"></div>
+    <div class="sage-line sage-line-1" style="animation-delay:1s;">You have answered every question.</div>
+    <div class="sage-line sage-line-2" style="animation-delay:2.5s;">Crossed every bridge.</div>
+    <div class="sage-line sage-line-3" style="animation-delay:4s;">Walked the full path from shadow to sunlight.</div>
+    <div class="sage-title sage-line" style="animation-delay:6s;">SAGE</div>
+    <div class="sage-line sage-line-5" style="animation-delay:8s;">The Akropolis awaits.</div>
+    <button class="sage-enter-btn sage-line" id="sage-enter-btn" style="animation-delay:9.5s;">Enter the Akropolis →</button>
+  </div>
+</div>
+
 <!-- ═══════════ REFLECTION MODAL ═══════════ -->
 <div class="modal-overlay" id="reflection-modal">
   <div class="modal-content" style="max-width:400px;">
@@ -1625,6 +1961,28 @@ body::after {
     <div id="reflection-topics" style="margin-bottom:20px;"></div>
     <button class="modal-btn" id="reflection-back-btn">Back to Hub</button>
   </div>
+</div>
+
+<!-- ═══════════ AKROPOLIS WALL SCREEN ═══════════ -->
+<div id="wall-screen" class="screen wall-screen">
+  <div class="wall-header">
+    <hr class="wall-hr">
+    <div class="wall-title">Akropolis</div>
+    <div class="wall-subtitle">Those who emerged from the Cave</div>
+  </div>
+  <div id="wall-inscribe" class="wall-inscribe" style="display:none;">
+    <div class="wall-inscribe-prompt">Inscribe your name</div>
+    <input type="text" id="wall-name-input" class="wall-inscribe-input" maxlength="20" placeholder="Your name" autocomplete="off">
+    <button id="wall-inscribe-btn" class="wall-inscribe-btn">Inscribe</button>
+    <div id="wall-inscribe-error" class="wall-inscribe-error"></div>
+    <div id="wall-inscribe-success" class="wall-inscribe-success" style="display:none;"></div>
+  </div>
+  <div id="wall-names" class="wall-names"></div>
+  <div class="wall-continue" id="wall-continue" style="display:none;">
+    <div class="wall-continue-text">The conversation continues.</div>
+    <a class="wall-bridges-link" href="#" id="wall-bridges-link">Walk the Bridges of Königsberg →</a>
+  </div>
+  <button class="wall-back-btn" id="wall-back-btn">Back to Hub</button>
 </div>
 
 <div class="score-toast" id="score-toast"></div>
@@ -2113,6 +2471,7 @@ function migrateState(s) {
   if (!s.wrongAnswers) s.wrongAnswers = [];
   if (!s.fsrsCards) s.fsrsCards = {};
   if (!s.inProgress) s.inProgress = null;
+  if (s.inscribed === undefined) s.inscribed = false;
   // Migrate old wrongAnswers to FSRS cards (one-time)
   if (s.wrongAnswers && s.wrongAnswers.length > 0 && Object.keys(s.fsrsCards).length === 0) {
     s.wrongAnswers.forEach(w => {
@@ -2137,6 +2496,142 @@ function loadState() {
 
 function saveState() {
   localStorage.setItem(SAVE_KEY, JSON.stringify(state));
+}
+
+// ═══════════ AKROPOLIS WALL ═══════════
+function isPerfectSage() {
+  const chapters = CHAPTERS;
+  if (chapters.length !== 26) return false;
+  for (const ch of chapters) {
+    const score = state.chapterScores[ch.id];
+    if (!score || !score.mastered) return false;
+    if (score.correct !== score.total) return false;
+  }
+  return true;
+}
+
+async function generateCompletionProof() {
+  // Build deterministic payload from chapter scores
+  const payload = CHAPTERS.map(ch => {
+    const s = state.chapterScores[ch.id];
+    return `${ch.id}:${s.correct}/${s.total}`;
+  }).join('|');
+  const key = 'athenaeum-emerged-from-cave-2026';
+  const enc = new TextEncoder();
+  const cryptoKey = await crypto.subtle.importKey(
+    'raw', enc.encode(key), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']
+  );
+  const sig = await crypto.subtle.sign('HMAC', cryptoKey, enc.encode(payload));
+  return { payload, hmac: Array.from(new Uint8Array(sig)).map(b => b.toString(16).padStart(2, '0')).join('') };
+}
+
+let wallLoaded = false;
+let wallEntries = [];
+
+async function loadWall() {
+  try {
+    const res = await fetch('/api/wall');
+    if (res.ok) wallEntries = await res.json();
+  } catch (e) {
+    wallEntries = [];
+  }
+  wallLoaded = true;
+}
+
+function renderWall() {
+  const container = $('wall-names');
+  container.innerHTML = '';
+
+  if (wallEntries.length === 0) {
+    container.innerHTML = '<div class="wall-empty">No names yet. Be the first.</div>';
+    return;
+  }
+
+  // Show newest first
+  const sorted = [...wallEntries].sort((a, b) =>
+    new Date(b.certified_at) - new Date(a.certified_at)
+  );
+
+  sorted.forEach(entry => {
+    const div = document.createElement('div');
+    div.className = 'wall-entry';
+    const d = new Date(entry.certified_at);
+    const dateStr = d.toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
+    div.innerHTML = `<div class="wall-name">${escapeHtml(entry.name)}</div><div class="wall-date">${dateStr}</div>`;
+    container.appendChild(div);
+  });
+}
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+async function showWallScreen(canInscribe) {
+  if (!wallLoaded) await loadWall();
+  renderWall();
+
+  // Show inscription form only if player has perfect sage and hasn't inscribed this session
+  const inscribeEl = $('wall-inscribe');
+  const continueEl = $('wall-continue');
+  if (canInscribe) {
+    inscribeEl.style.display = '';
+    continueEl.style.display = '';
+    $('wall-name-input').value = '';
+    $('wall-inscribe-error').textContent = '';
+    $('wall-inscribe-success').style.display = 'none';
+    $('wall-inscribe-btn').disabled = false;
+    $('wall-inscribe-btn').style.display = '';
+    $('wall-name-input').style.display = '';
+    $('wall-inscribe-prompt').style.display = '';
+  } else {
+    inscribeEl.style.display = 'none';
+    continueEl.style.display = 'none';
+  }
+
+  showScreen('wall-screen');
+}
+
+async function inscribeName() {
+  const name = $('wall-name-input').value.trim();
+  if (name.length < 2) {
+    $('wall-inscribe-error').textContent = 'At least 2 characters';
+    return;
+  }
+
+  $('wall-inscribe-btn').disabled = true;
+  $('wall-inscribe-error').textContent = '';
+
+  try {
+    const proof = await generateCompletionProof();
+    const res = await fetch('/api/wall', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, payload: proof.payload, hmac: proof.hmac })
+    });
+    const data = await res.json();
+
+    if (res.ok) {
+      // Hide input, show success
+      $('wall-name-input').style.display = 'none';
+      $('wall-inscribe-btn').style.display = 'none';
+      $('wall-inscribe-prompt').style.display = 'none';
+      $('wall-inscribe-success').textContent = name.toUpperCase() + ' — inscribed';
+      $('wall-inscribe-success').style.display = '';
+      state.inscribed = true;
+      saveState();
+      // Refresh wall with returned data
+      if (data.wall) wallEntries = data.wall;
+      renderWall();
+    } else {
+      $('wall-inscribe-error').textContent = data.error || 'Failed';
+      $('wall-inscribe-btn').disabled = false;
+    }
+  } catch (e) {
+    $('wall-inscribe-error').textContent = 'Network error — try again';
+    $('wall-inscribe-btn').disabled = false;
+  }
 }
 
 // ═══════════ SOUND ENGINE (Web Audio API) ═══════════
@@ -2203,6 +2698,48 @@ function playSound(type) {
         gain.gain.exponentialRampToValueAtTime(0.001, t + 0.5);
         osc.start(t); osc.stop(t + 0.5);
       });
+    } else if (type === 'sage') {
+      // Deep resonant tone rising slowly — the cave mouth opening
+      // Low drone foundation
+      const drone = ctx.createOscillator();
+      const droneGain = ctx.createGain();
+      drone.connect(droneGain); droneGain.connect(ctx.destination);
+      drone.type = 'sine'; drone.frequency.value = 55;
+      droneGain.gain.setValueAtTime(0.2, ctx.currentTime);
+      droneGain.gain.linearRampToValueAtTime(0.25, ctx.currentTime + 1);
+      droneGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 4);
+      drone.start(ctx.currentTime); drone.stop(ctx.currentTime + 4);
+
+      // Rising open fifth — ascent from cave
+      const ascent = [
+        { freq: 130.8, delay: 0.3, dur: 3.5 },  // C3
+        { freq: 196,   delay: 0.8, dur: 3.0 },   // G3
+        { freq: 261.6, delay: 1.3, dur: 2.5 },   // C4
+        { freq: 392,   delay: 1.8, dur: 2.0 },   // G4
+        { freq: 523.3, delay: 2.3, dur: 1.8 },   // C5
+      ];
+      ascent.forEach(({ freq, delay, dur }) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain); gain.connect(ctx.destination);
+        osc.type = 'sine'; osc.frequency.value = freq;
+        const t = ctx.currentTime + delay;
+        gain.gain.setValueAtTime(0, t);
+        gain.gain.linearRampToValueAtTime(0.12, t + 0.3);
+        gain.gain.exponentialRampToValueAtTime(0.001, t + dur);
+        osc.start(t); osc.stop(t + dur);
+      });
+
+      // Final bell — sunlight
+      const bell = ctx.createOscillator();
+      const bellGain = ctx.createGain();
+      bell.connect(bellGain); bellGain.connect(ctx.destination);
+      bell.type = 'sine'; bell.frequency.value = 1047; // C6
+      const bt = ctx.currentTime + 3;
+      bellGain.gain.setValueAtTime(0, bt);
+      bellGain.gain.linearRampToValueAtTime(0.18, bt + 0.1);
+      bellGain.gain.exponentialRampToValueAtTime(0.001, bt + 2.5);
+      bell.start(bt); bell.stop(bt + 2.5);
     }
   } catch(e) {}
 }
@@ -2802,6 +3339,14 @@ function startReviewMode() {
 // ═══════════ REFLECTION MODAL ═══════════
 function showReflectionModal() {
   const ch = currentChapter;
+
+  // If this certification completed perfect sage — show the ascension
+  if (isPerfectSage() && !state.inscribed) {
+    playSound('sage');
+    $('sage-modal').classList.add('show');
+    return;
+  }
+
   $('reflection-title').textContent = `Chapter ${ch.id} Certified`;
 
   // Pick 3 topic keywords from questions in this chapter that were most recently wrong
@@ -2853,9 +3398,34 @@ function showReflectionModal() {
   $('reflection-modal').classList.add('show');
 }
 
+// Sage ascension — enter the Akropolis
+$('sage-enter-btn').addEventListener('click', () => {
+  $('sage-modal').classList.remove('show');
+  showWallScreen(true);
+});
+
 $('reflection-back-btn').addEventListener('click', () => {
   $('reflection-modal').classList.remove('show');
+  if (false) { // sage path now handled by showReflectionModal redirect
+    showWallScreen(true);
+  } else {
+    showScreen('hub-screen');
+  }
+});
+
+// Akropolis wall
+$('wall-back-btn').addEventListener('click', () => showScreen('hub-screen'));
+$('wall-inscribe-btn').addEventListener('click', inscribeName);
+$('wall-name-input').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') inscribeName();
+});
+$('wall-bridges-link').addEventListener('click', (e) => {
+  e.preventDefault();
   showScreen('hub-screen');
+  // Scroll to Bridges section
+  setTimeout(() => {
+    document.querySelector('.viva-voce-section').scrollIntoView({ behavior: 'smooth' });
+  }, 100);
 });
 
 // ═══════════ CAVE CONSTELLATION ═══════════
