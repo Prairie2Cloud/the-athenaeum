@@ -599,6 +599,13 @@ body::after {
   color: var(--success);
 }
 
+.choice-btn.correct.reveal {
+  background: rgba(74, 158, 107, 0.25);
+  box-shadow: 0 0 12px rgba(74, 158, 107, 0.3);
+  transform: scale(1.02);
+  transition: all 0.4s ease;
+}
+
 .choice-btn.correct .choice-key {
   background: var(--success);
   color: var(--bg);
@@ -3075,7 +3082,10 @@ function answerQuestion(choiceIndex, shuffledCorrectIndex) {
   // Mark buttons
   buttons.forEach((btn, i) => {
     btn.classList.add('disabled');
-    if (i === correctIdx) btn.classList.add('correct');
+    if (i === correctIdx) {
+      btn.classList.add('correct');
+      if (!earnedCorrect) btn.classList.add('reveal');
+    }
     if (i === choiceIndex && !isCorrect) btn.classList.add('wrong');
   });
 
@@ -3126,9 +3136,10 @@ function answerQuestion(choiceIndex, shuffledCorrectIndex) {
     showScoreToast();
   }
 
-  // Auto-advance: start timer and animate Next button
+  // Auto-advance: linger longer on wrong answers so user can read the correct one
+  const advanceDelay = earnedCorrect ? 2000 : 3500;
   $('result-next').classList.add('auto-advancing');
-  autoAdvanceTimer = setTimeout(() => nextCard(), 2000);
+  autoAdvanceTimer = setTimeout(() => nextCard(), advanceDelay);
 }
 
 function nextCard() {
